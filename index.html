@@ -243,7 +243,7 @@ input[type=search]:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4
 </div>
 <div class="toast" id="toast" role="status"></div>
 
-<script>window.PL_STATIC={files:{zip:"files/Projeto_Livre_Gestao_Projetos.zip",pbix:"files/Gestao_Projetos.pbix",xlsx:"files/Dados_Gestao_Projetos.xlsx",docx:"files/Relatorio_Projeto_Livre_Gestao_Projetos.docx",apres:"files/Apresentacao_Oral_Projeto_Livre.pdf"}};</script>
+<script>window.PL_STATIC={files:{zip:"files/Projeto_Livre_Gestao_Projetos.zip",pbix:"files/Gestao_Projetos.pbix",xlsx:"files/Dados_Gestao_Projetos.xlsx",docx:"files/Relatorio_Projeto_Livre_Gestao_Projetos.docx",apres:"files/Apresentacao_Oral_Projeto_Livre.pdf",visual:"files/Apresentacao_Visual_Projeto_Livre.pdf"}};</script>
 <script src="data.js"></script>
 <script>
 const PL = window.PL, V = PL.val, T = PL.tot, M = PL.model;
@@ -732,15 +732,16 @@ V_['usar-ia'] = () => `${H('', 'Posso usar IA?', 'Sim, mas com regras. O objetiv
   <p class="callout" style="margin-top:16px">Quem consegue explicar e interpretar o próprio trabalho demonstra autonomia. Use o Assistente IA para treinar perguntas da defesa, mas responda com as suas palavras.</p>`;
 
 V_.ficheiros = () => `${H('', 'Ficheiros a submeter', 'O que o guia pede para entregar e onde está cada ficheiro. O ZIP tem tudo junto.')}
-  <div class="card hl" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between"><div><h3 style="margin:0">Projeto_Livre_Gestao_Projetos.zip</h3><span class="muted" style="font-size:13px">Dashboard Power BI (.pbix), Excel, projeto .pbip, relatório Word, esquema do modelo, layout, apresentação oral (PDF) e scripts · 2,1 MB</span></div><button class="btn primary" data-dl="zip">${ic('down')} Descarregar ZIP</button></div>
+  <div class="card hl" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between"><div><h3 style="margin:0">Projeto_Livre_Gestao_Projetos.zip</h3><span class="muted" style="font-size:13px">Dashboard Power BI (.pbix), Excel, projeto .pbip, relatório Word, esquema do modelo, layout, apresentação oral e apresentação visual (PDF) e scripts · 2,8 MB</span></div><button class="btn primary" data-dl="zip">${ic('down')} Descarregar ZIP</button></div>
   <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>#</th><th>Ficheiro pedido</th><th>Onde está</th><th>Estado</th></tr></thead><tbody>
     <tr><td>1</td><td><b>Ficheiro .pbix</b> — dashboard com o modelo e as medidas</td><td><span class="mono">Gestao_Projetos.pbix</span> já guardado na pasta Gestao_Projetos, com os dados carregados. O ZIP traz também o projeto <span class="mono">.pbip</span> de origem.</td><td><button class="btn" data-dl="pbix">Descarregar .pbix</button></td></tr>
     <tr><td>2</td><td><b>Dados de origem</b> com indicação da fonte</td><td><span class="mono">Dados_Gestao_Projetos.xlsx</span> (folha LEIA-ME indica a fonte)</td><td><button class="btn" data-dl="xlsx">Descarregar Excel</button></td></tr>
     <tr><td>3</td><td><b>Resumo executivo</b> de uma página</td><td>Relatório Word, secção 1</td><td><button class="btn" data-dl="docx">Descarregar Word</button></td></tr>
     <tr><td>4</td><td><b>Proposta inicial e nota de IA</b> (Anexos A e B)</td><td>Relatório Word e secção Anexos A e B desta página</td><td><span class="pill good">Efetuado</span></td></tr>
     <tr><td>5</td><td><b>Apresentação oral</b> de 5 a 8 minutos</td><td><span class="mono">Apresentacao_Oral_Projeto_Livre.pdf</span>: guião de 8 diapositivos com o que dizer, as duas medidas DAX e perguntas prováveis do formador, preparado para o NotebookLM</td><td><button class="btn" data-dl="apres">Descarregar apresentação</button></td></tr>
-    <tr><td>6</td><td><b>Link público do Dashboard de Apresentação</b> (este dossiê)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
-    <tr><td>7</td><td><b>Link público do conteúdo Power BI</b> (versão web interativa das 2 páginas do relatório)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
+    <tr><td>6</td><td><b>Apresentação Visual</b> (PDF)</td><td><span class="mono">Apresentacao_Visual_Projeto_Livre.pdf</span>: apresentação do projeto para mostrar na defesa</td><td><button class="btn" data-dl="visual">Descarregar Apresentação Visual</button></td></tr>
+    <tr><td>7</td><td><b>Link público do Dashboard de Apresentação</b> (este dossiê)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
+    <tr><td>8</td><td><b>Link público do conteúdo Power BI</b> (versão web interativa das 2 páginas do relatório)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
   </tbody></table></div>
   <p class="muted" id="dlnote" style="font-size:13px">Cada descarga pede confirmação antes de guardar o ficheiro. O .pbix vem dentro de Gestao_Projetos_pbix.zip, porque o claude.ai não permite descarregar ficheiros .pbix diretamente: extraia o ZIP para obter o Gestao_Projetos.pbix.</p>
   <h2>Como abrir o projeto Power BI</h2>
@@ -838,7 +839,7 @@ async function ask(q){
 
 // ---------- downloads ----------
 let downloadsApi, filesLoaded = null;
-function loadFiles(){ return filesLoaded ??= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'files_v7.js'; s.onload = () => res(window.PL_FILES); s.onerror = rej; document.head.append(s) }) }
+function loadFiles(){ return filesLoaded ??= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'files_v8.js'; s.onload = () => res(window.PL_FILES); s.onerror = rej; document.head.append(s) }) }
 async function download(key){
   const note = $('#dlnote');
   if (!downloadsApi && window.PL_STATIC) { const a = document.createElement('a'); a.href = window.PL_STATIC.files[key]; a.download = ''; document.body.append(a); a.click(); a.remove(); return }
