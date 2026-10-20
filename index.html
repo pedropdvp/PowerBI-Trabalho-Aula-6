@@ -1,0 +1,840 @@
+<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Dossiê interativo do Projeto Livre Power BI — Tema 3 Gestão de Projetos (dados fictícios)."><style>[hidden]{display:none!important}img{max-width:100%}</style></head><body><title>Dossiê Gestão de Projetos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: régua lateral fixa de secções (botões) + painel de leitura; caderno de obra técnico, laranja de segurança como único acento */
+:root{
+  --bg:#EEF1F4; --panel:#FFFFFF; --panel2:#F5F7F9; --ink:#17212B; --ink2:#4A5866; --ink3:#7A8794;
+  --line:#D6DDE3; --accent:#D9661A; --accent-ink:#FFFFFF; --accent-soft:#FBE7D8; --steel:#2C5A86; --steel-soft:#DCE7F2;
+  --good:#1F8A5B; --warn:#B7791F; --bad:#C2413B; --good-soft:#DDF1E7; --warn-soft:#F7ECD6; --bad-soft:#F6DEDC;
+  --code:#F1F4F7;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151B; --panel:#161E26; --panel2:#1B242E; --ink:#E6ECF1; --ink2:#AAB6C2; --ink3:#7D8A97;
+  --line:#2A3540; --accent:#F08A3C; --accent-ink:#1A0E05; --accent-soft:#3A2414; --steel:#7FB0DE; --steel-soft:#1E3245;
+  --good:#4CC38A; --warn:#E3A93B; --bad:#EF6B63; --good-soft:#163527; --warn-soft:#3A2D12; --bad-soft:#3D1D1B; --code:#11181F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151B; --panel:#161E26; --panel2:#1B242E; --ink:#E6ECF1; --ink2:#AAB6C2; --ink3:#7D8A97;
+  --line:#2A3540; --accent:#F08A3C; --accent-ink:#1A0E05; --accent-soft:#3A2414; --steel:#7FB0DE; --steel-soft:#1E3245;
+  --good:#4CC38A; --warn:#E3A93B; --bad:#EF6B63; --good-soft:#163527; --warn-soft:#3A2D12; --bad-soft:#3D1D1B; --code:#11181F; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+button{font:inherit;color:inherit}
+a{color:var(--steel)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:268px minmax(0,1fr);min-height:100%}
+/* sidebar */
+.side{background:var(--panel);border-right:1px solid var(--line);padding:20px 14px 24px max(14px,env(safe-area-inset-left,0px));position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:0 6px 16px;border-bottom:1px solid var(--line);margin-bottom:12px;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.brand-mark{width:38px;height:38px;border-radius:8px;background:var(--accent);display:grid;place-items:center;flex:none}
+.brand-mark svg{width:20px;height:20px}
+.brand b{font:700 17px/1.1 var(--f-display);font-stretch:85%;display:block;letter-spacing:.2px}
+.brand small{font:500 10.5px/1.2 var(--f-mono);color:var(--ink3);letter-spacing:.6px;text-transform:uppercase}
+.grp{font:600 10.5px/1 var(--f-mono);letter-spacing:1px;text-transform:uppercase;color:var(--ink3);padding:14px 8px 6px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;border-radius:7px;padding:7px 9px;font-size:13.5px;color:var(--ink2);cursor:pointer}
+.nav button .ic{width:16px;height:16px;flex:none;color:var(--ink3)}
+.nav button:hover{background:var(--panel2);color:var(--ink)}
+.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.nav button[aria-current="true"] .ic{color:var(--accent)}
+.nav button.ai{border:1px solid var(--accent);color:var(--ink);margin-top:4px}
+/* main */
+main{min-width:0;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;padding:0 12px}
+.topline{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:6px}
+.crumb{font:500 11.5px/1 var(--f-mono);letter-spacing:.8px;text-transform:uppercase;color:var(--accent)}
+.tag{font:500 11px/1 var(--f-mono);color:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--panel)}
+h1{font:800 clamp(28px,4vw,40px)/1.08 var(--f-display);font-stretch:80%;margin:.15em 0 .3em;text-wrap:balance;letter-spacing:-.2px}
+h2{font:700 21px/1.2 var(--f-display);font-stretch:88%;margin:30px 0 12px;text-wrap:balance}
+h3{font:600 15.5px/1.3 var(--f-body);margin:0 0 6px}
+.lede{color:var(--ink2);font-size:16px;max-width:72ch;margin:0 0 18px}
+p{max-width:75ch}
+.muted{color:var(--ink3)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.card.flat{background:var(--panel2)}
+.card.hl{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.kpi{display:flex;flex-direction:column;gap:4px}
+.kpi .lab{font:500 12px/1.3 var(--f-mono);color:var(--ink3);letter-spacing:.3px}
+.kpi .val{font:700 30px/1.05 var(--f-display);font-stretch:85%;font-variant-numeric:tabular-nums}
+.kpi .note{font-size:12.5px;color:var(--ink2)}
+.pill{display:inline-flex;align-items:center;gap:5px;font:600 11.5px/1 var(--f-mono);padding:4px 8px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.info{background:var(--steel-soft);color:var(--steel)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11.5px/1.3 var(--f-mono);letter-spacing:.4px;text-transform:uppercase;color:var(--ink3);background:var(--panel2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:13px}
+code,.mono{font-family:var(--f-mono);font-size:12.5px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font:12.5px/1.55 var(--f-mono);margin:8px 0 0;white-space:pre}
+ul.clean{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+ul.ticks li{padding-left:24px;position:relative}
+ul.ticks li::before{content:"";position:absolute;left:2px;top:5px;width:12px;height:7px;border-left:2px solid var(--good);border-bottom:2px solid var(--good);transform:rotate(-45deg)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13.5px;font-weight:500}
+.btn:hover{border-color:var(--ink3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:none;padding:7px 12px;font-size:13px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+/* home tiles */
+.tiles{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.tile{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:104px}
+.tile:hover{border-color:var(--accent)}
+.tile .ic{width:20px;height:20px;color:var(--accent)}
+.tile b{font-size:14.5px}
+.tile span{font-size:12.5px;color:var(--ink2);line-height:1.4}
+/* bars */
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(110px,190px) minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:12px;background:var(--panel2);border-radius:3px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--steel);border-radius:2px}
+.bar .fill.hot{background:var(--accent)}
+.bar .v{text-align:right;font:500 12.5px var(--f-mono);font-variant-numeric:tabular-nums}
+svg text{font-family:var(--f-mono)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+/* model */
+.model-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.charts{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+.k3{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1100px){.k3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.k3{grid-template-columns:minmax(0,1fr)}}
+.model-svg{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+.model-svg svg{display:block;min-width:900px;width:100%;height:auto}
+.mt{cursor:pointer}
+.mt rect.box{fill:var(--panel);stroke:var(--line);stroke-width:1.2}
+.mt.fact rect.head{fill:var(--accent)} .mt.dim rect.head{fill:var(--steel)} .mt.meas rect.head{fill:var(--ink3)}
+.mt text.t{font:700 15px var(--f-body);fill:#fff}
+.mt text.c{font-size:13px;fill:var(--ink2)}
+.mt text.k{fill:var(--steel);font-weight:600}
+.mt.sel rect.box{stroke:var(--accent);stroke-width:2.4}
+.mt.dimmed{opacity:.28}
+.rel{fill:none;stroke:var(--ink3);stroke-width:1.6}
+.rel.inactive{stroke:var(--accent);stroke-dasharray:6 5}
+.rel.on{stroke:var(--accent);stroke-width:2.6}
+.rel.dimmed{opacity:.15}
+.flow .rel:not(.inactive){stroke-dasharray:4 7;animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-22}}
+@media (prefers-reduced-motion: reduce){.flow .rel{animation:none}}
+.relmark{font:700 15px var(--f-mono)}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:12px;min-height:280px}
+.msg{max-width:min(760px,100%);padding:11px 14px;border-radius:10px;white-space:pre-wrap;line-height:1.55}
+.msg.user{align-self:flex-end;background:var(--steel-soft);border:1px solid var(--line)}
+.msg.bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line)}
+.composer{display:flex;gap:8px;align-items:flex-end}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;resize:vertical;min-height:46px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+/* timeline */
+.tl{display:flex;height:34px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.tl div{display:flex;align-items:center;justify-content:center;font:600 11px var(--f-mono);color:#fff;white-space:nowrap;overflow:hidden;padding:0 4px}
+/* checklist */
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);flex:none}
+.check label{cursor:pointer}
+.progress{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.progress div{height:100%;background:var(--good);transition:width .3s}
+.callout{border-left:3px solid var(--steel);background:var(--steel-soft);padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px;max-width:none}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));right:calc(18px + env(safe-area-inset-right,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;font-size:13.5px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:20}
+.toast.on{opacity:1;transform:none}
+.menu-btn{display:none}
+details.acc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+details.acc+details.acc{margin-top:8px}
+details.acc summary{cursor:pointer;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;list-style:none}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(-45deg);transition:.2s;flex:none}
+details.acc[open] summary::before{transform:rotate(45deg)}
+details.acc .body{padding:0 16px 16px}
+input[type=search]{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:0;width:min(320px,100%)}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:0 auto 0 0;width:min(300px,86vw);z-index:15;transform:translateX(-102%);transition:transform .25s;height:100%;padding-top:calc(20px + env(safe-area-inset-top,0px))}
+  .side.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+  .menu-btn{display:inline-flex}
+  .model-wrap{grid-template-columns:minmax(0,1fr)}
+  .bar{grid-template-columns:minmax(90px,130px) minmax(0,1fr) 56px}
+}
+</style>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Secções do dossiê">
+    <button class="brand" data-go="inicio" aria-label="Início">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"><path d="M4 20 12 4l8 16z"/></svg></span>
+      <span><b>Vértice · Projeto Livre</b><small>Power BI · Tema 3</small></span>
+    </button>
+    <nav id="nav"></nav>
+  </aside>
+  <main>
+    <div class="wrap">
+      <div class="topline">
+        <button class="btn menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">☰ Secções</button>
+        <span class="crumb" id="crumb">Início</span>
+        <span class="tag">Dados fictícios · corte 31/12/2025</span>
+      </div>
+      <section id="view" aria-live="polite"></section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>window.PL_STATIC={files:{zip:"files/Projeto_Livre_Gestao_Projetos.zip",pbix:"files/Gestao_Projetos.pbix",xlsx:"files/Dados_Gestao_Projetos.xlsx",docx:"files/Relatorio_Projeto_Livre_Gestao_Projetos.docx",apres:"files/Apresentacao_Oral_Projeto_Livre.pdf"}};</script>
+<script src="data.js"></script>
+<script>
+const PL = window.PL, V = PL.val, T = PL.tot, M = PL.model;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pc = (v, d = 1) => (v * 100).toFixed(d).replace('.', ',') + ' %';
+const sp = (v, d = 1) => (v >= 0 ? '+' : '') + pc(v, d);
+const meur = v => (v / 1e6).toFixed(1).replace('.', ',') + ' M€';
+const n2 = (v, d = 2) => Number(v).toFixed(d).replace('.', ',');
+const nf = v => Math.round(v).toLocaleString('pt-PT');
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
+const store = { get(k, d){ try { const v = localStorage.getItem('pl:' + k); return v == null ? d : JSON.parse(v) } catch { return d } },
+                set(k, v){ try { localStorage.setItem('pl:' + k, JSON.stringify(v)) } catch {} } };
+
+// ---------- ícones (traço simples) ----------
+const I = {
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  db:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
+  check:'<path d="M4 12l5 5L20 6"/>',
+  table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
+  model:'<rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/>',
+  fx:'<path d="M7 20c3 0 3-16 6-16M6 10h7M14 14l6 6M20 14l-6 6"/>',
+  layers:'<path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  scale:'<path d="M12 3v18M5 7h14M5 7l-3 7h6zM19 7l-3 7h6z"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bot:'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 14h.01M15 14h.01"/>',
+  shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>',
+  down:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  award:'<circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/>',
+  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
+  home:'<path d="M3 11 12 4l9 7v9H3z"/>',
+  build:'<path d="M3 21h18M5 21V9l7-5 7 5v12M10 21v-6h4v6"/>',
+};
+const ic = k => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+
+// ---------- secções ----------
+const SECTIONS = [
+  {grp:'Contexto', items:[
+    ['inicio','Início','home','Visão geral do trabalho e atalhos'],
+    ['publico','Público-alvo e decisões','user','Quem usa a dashboard e que decisões toma'],
+    ['objetivo','Objetivo de negócio','target','Tema 3, as 4 perguntas e o requisito adicional'],
+    ['origem','Origem dos dados','db','Como foram obtidos e criados os dados'],
+    ['adequado','Dataset adequado','check','Os 5 critérios do guia, um a um'],
+  ]},
+  {grp:'Construção', items:[
+    ['pesquisa','Pesquisa e construção','build','Decisões antes de construir'],
+    ['tabelas','Tabelas e tipos de dados','table','Esquema de cada tabela'],
+    ['modelo','Modelo de dados interativo','model','Factos, dimensões, relações e Calendário'],
+    ['medidas','Ideias de medidas DAX','fx','As medidas do guia e as 42 criadas'],
+    ['areas','Matérias aplicadas','layers','O que foi feito em cada área das aulas'],
+    ['abordagens','Abordagens e boas práticas','scale','Alternativas de modelação, DAX e visuais'],
+  ]},
+  {grp:'Resultados', items:[
+    ['kpis','KPIs relevantes','chart','Os indicadores e gráficos principais'],
+    ['interpretacao','Interpretação de resultados','bulb','3 conclusões, 1 risco, 2 recomendações'],
+  ]},
+  {grp:'Entrega', items:[
+    ['plano','Plano de tempo','clock','As 5 etapas e a duração de cada uma'],
+    ['usar-ia','Posso usar IA?','shield','Proposta, registo de IA e defesa'],
+    ['ficheiros','Ficheiros a submeter','down','Download do ZIP e dos ficheiros'],
+    ['avaliacao','Avaliação','award','Onde está cada critério obrigatório e de diferenciação'],
+    ['anexos','Anexos A e B','doc','Proposta inicial e nota de utilização de IA'],
+    ['anexo-c','Anexo C · Verificação','list','Lista de verificação final interativa'],
+  ]},
+];
+const ALL = Object.fromEntries(SECTIONS.flatMap(g => g.items).map(i => [i[0], i]));
+ALL['assistente'] = ['assistente','Assistente IA','bot','Perguntas sobre o trabalho e o guia'];
+
+function renderNav(){
+  $('#nav').innerHTML = SECTIONS.map(g => `<div class="grp">${g.grp}</div><div class="nav">${
+    g.items.map(i => `<button data-go="${i[0]}">${ic(i[2])}<span>${i[1]}</span></button>`).join('')}</div>`).join('') +
+    `<div class="grp">Ajuda</div><div class="nav"><button class="ai" data-go="assistente">${ic('bot')}<span>Assistente IA</span></button></div>`;
+}
+
+// ---------- gráficos ----------
+function bars(rows, {fmt = v => sp(v), max, hot = 1, key = 'v'} = {}){
+  const mx = max ?? Math.max(...rows.map(r => Math.abs(r[key])));
+  return `<div class="bars">${rows.map((r, i) => `<div class="bar"><span>${esc(r.name)}</span>
+    <span class="track"><span class="fill ${i < hot ? 'hot' : ''}" style="width:${Math.max(2, Math.abs(r[key]) / mx * 100)}%"></span></span>
+    <span class="v">${fmt(r[key])}</span></div>`).join('')}</div>`;
+}
+function lineChart(series, {w = 560, h = 250, yFmt = v => pc(v, 0), labels, max} = {}){
+  const L = 48, R = 14, Tp = 14, B = 30, n = labels.length;
+  const mx = max ?? Math.max(...series.flatMap(s => s.data));
+  const x = i => L + i * (w - L - R) / (n - 1), y = v => Tp + (1 - v / mx) * (h - Tp - B);
+  const ticks = [0, .25, .5, .75, 1].map(t => t * mx);
+  let s = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Gráfico de linhas">`;
+  s += ticks.map(t => `<line x1="${L}" x2="${w - R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="var(--ink3)">${yFmt(t)}</text>`).join('');
+  labels.forEach((l, i) => { if (i % 4 === 0 || i === n - 1 && i % 4 > 1) s += `<text x="${x(i)}" y="${h - 10}" text-anchor="middle" font-size="11" fill="var(--ink3)">${l}</text>` });
+  series.forEach(se => {
+    const pts = se.data.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+    if (se.area) s += `<polygon points="${x(0)},${y(0)} ${pts} ${x(n - 1)},${y(0)}" fill="${se.color}" opacity=".12"/>`;
+    s += `<polyline points="${pts}" fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    const lv = se.data[n - 1]; s += `<circle cx="${x(n - 1)}" cy="${y(lv)}" r="4" fill="${se.color}"/>`;
+  });
+  return s + '</svg>';
+}
+function comboChart(rows, {w = 560, h = 250} = {}){
+  const L = 48, R = 14, Tp = 14, B = 30, n = rows.length;
+  const mx = Math.max(...rows.flatMap(r => [r.orc, r.real])) * 1.08;
+  const bw = (w - L - R) / n, y = v => Tp + (1 - v / mx) * (h - Tp - B);
+  let s = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Orçamento vs custo real por mês">`;
+  [0, .25, .5, .75, 1].forEach(t => { const v = t * mx; s += `<line x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--ink3)">${(v / 1e6).toFixed(0)} M€</text>` });
+  rows.forEach((r, i) => { const x0 = L + i * bw + bw * .18; s += `<rect x="${x0}" y="${y(r.real)}" width="${bw * .64}" height="${y(0) - y(r.real)}" rx="2" fill="var(--accent)" opacity=".9"><title>${r.m}: real ${meur(r.real)} · orçamento ${meur(r.orc)}</title></rect>`;
+    if (i % 4 === 0 || i === n - 1 && i % 4 > 1) s += `<text x="${L + i * bw + bw / 2}" y="${h - 10}" text-anchor="middle" font-size="11" fill="var(--ink3)">${r.m}</text>` });
+  s += `<polyline points="${rows.map((r, i) => `${L + i * bw + bw / 2},${y(r.orc)}`).join(' ')}" fill="none" stroke="var(--steel)" stroke-width="2.5"/>`;
+  return s + '</svg>';
+}
+function donut(obj){
+  const tot = Object.values(obj).reduce((a, b) => a + b, 0), cols = {'Concluída':'var(--good)','Em curso':'var(--steel)','Por iniciar':'var(--ink3)','Bloqueada':'var(--bad)'};
+  let a = 0, s = '<svg viewBox="0 0 120 120" width="140" height="140" role="img" aria-label="Tarefas por estado">';
+  for (const [k, v] of Object.entries(obj)) { const a1 = a + v / tot * Math.PI * 2, lg = a1 - a > Math.PI ? 1 : 0;
+    s += `<path d="M${60 + 50 * Math.sin(a)} ${60 - 50 * Math.cos(a)} A50 50 0 ${lg} 1 ${60 + 50 * Math.sin(a1)} ${60 - 50 * Math.cos(a1)}" stroke="${cols[k]}" stroke-width="18" fill="none"/>`; a = a1 }
+  s += `<text x="60" y="58" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">${tot}</text><text x="60" y="74" text-anchor="middle" font-size="9" fill="var(--ink3)">tarefas</text></svg>`;
+  return `<div class="row" style="gap:18px">${s}<div class="legend" style="flex-direction:column;gap:6px">${Object.entries(obj).map(([k, v]) => `<span><i style="background:${cols[k]}"></i>${k}: <b>${v}</b> (${pc(v / tot, 0)})</span>`).join('')}</div></div>`;
+}
+const pillFor = (v, a, b, inv) => { const bad = inv ? v < a : v > a, warn = inv ? v < b : v > b; return bad ? 'bad' : warn ? 'warn' : 'good' };
+
+// ---------- dados de apoio ----------
+const reab = PL.tipo.find(t => t.name === 'Reabilitação'), infra = PL.tipo.find(t => t.name === 'Infraestrutura');
+const f5 = PL.fase.find(f => f.name === 'Instalações Técnicas'), g1 = PL.gestor[0], gmin = PL.gestor[PL.gestor.length - 1];
+const k3 = PL.cat.find(c => c.name === 'Subempreitadas');
+const nInt = PL.intervir.length, g1Int = PL.intervir.filter(p => p.gestor === g1.name).length;
+const TYPE = {string:'Texto', dateTime:'Data', decimal:'Decimal fixo (€)', int64:'Número inteiro', double:'Número decimal'};
+const T2PBI = {text:'string', date:'dateTime', cur:'decimal', int:'int64', num:'double'};
+const TABLE_INFO = {
+  dProjetos:{role:'dim', src:'tProjetos + tClientes + tGestores (Merge)', desc:'Uma linha por projeto. Junta a informação do cliente e do gestor (Merge) para o modelo ficar em estrela. Tem as colunas calculadas Dias_Atraso e Situacao_Prazo.', rows:'tProjetos', grain:'1 linha = 1 projeto'},
+  dFases:{role:'dim', src:'tFases', desc:'As 7 fases da obra, ordenadas pela coluna Ordem (Sort by column).', rows:'tFases', grain:'1 linha = 1 fase'},
+  dCategorias:{role:'dim', src:'tCategorias', desc:'Categorias de custo: mão de obra, materiais, subempreitadas, equipamentos e custos indiretos.', rows:'tCategorias', grain:'1 linha = 1 categoria'},
+  dCalendario:{role:'cal', src:'DAX (CALENDAR + ADDCOLUMNS)', desc:'Uma linha por dia, sem dias em falta, de 01/01/2024 a 31/12/2026. Marcada como tabela de datas. Permite ano anterior (SAMEPERIODLASTYEAR) e acumulado no ano (TOTALYTD).', rows:null, grain:'1 linha = 1 dia'},
+  fOrcamento:{role:'fact', src:'tOrcamento', desc:'Custo planeado por mês × projeto × fase × categoria.', rows:'tOrcamento', grain:'1 linha = mês · projeto · fase · categoria'},
+  fCustos:{role:'fact', src:'tCustos2024 + tCustos2025 (Append)', desc:'Movimentos de custo real. Os dois ficheiros anuais são juntos com Append; removidos duplicados e nulos.', rows:'tCustos2024+2025', grain:'1 linha = 1 movimento de custo'},
+  fTarefas:{role:'fact', src:'tTarefas', desc:'Tarefas de cada projeto, com datas previstas e reais, horas, estado e risco. Tem duas datas ligadas ao Calendário (uma ativa, uma inativa).', rows:'tTarefas', grain:'1 linha = 1 tarefa'},
+  fProgresso:{role:'fact', src:'tProgresso', desc:'Fotografia no fim de cada mês do valor planeado (PV) e do valor ganho (EV) acumulados, por projeto e fase. É semi-aditiva: soma-se só a última data.', rows:'tProgresso', grain:'1 linha = fim de mês · projeto · fase'},
+  _Medidas:{role:'meas', src:'Tabela calculada vazia', desc:'Guarda as 42 medidas DAX em pastas. A única coluna (Ignorar) está oculta.', rows:null, grain:'—'},
+};
+const COL_DESC = {ID_Projeto:'Chave do projeto (P01…P32)', Projeto:'Nome do projeto', Tipo_Projeto:'Residencial, Comercial, Infraestrutura, Reabilitação', Distrito:'Distrito da obra (categoria geográfica)', ID_Cliente:'Chave do cliente (oculta)', ID_Gestor:'Chave do gestor (oculta)',
+  Data_Inicio:'Início da obra', Data_Fim_Prevista:'Fim contratual', Data_Fim_Real:'Fim real (vazio = não concluído)', Orcamento_Contratado:'Orçamento total aprovado (BAC)', Estado:'Concluído / Em curso / Suspenso (projetos); Concluída / Em curso / Bloqueada / Por iniciar (tarefas)', Prioridade:'Alta, Média, Baixa',
+  Cliente:'Nome do cliente (vem de tClientes)', Setor:'Público ou Privado', Gestor:'Gestor de projeto (vem de tGestores)', Departamento:'Edificação, Infraestruturas, Reabilitação', Dias_Atraso:'Coluna personalizada: fim real (ou data de corte) − fim previsto', Situacao_Prazo:'Coluna condicional: no prazo / atraso ligeiro / moderado / grave', Duracao_Prevista_Meses:'Duração contratual em meses',
+  ID_Fase:'Chave da fase (F1…F7)', Fase:'Nome da fase', Ordem:'Ordem da fase na obra (para ordenar)', ID_Categoria:'Chave da categoria (K1…K5)', Categoria:'Nome da categoria de custo', Date:'Dia (chave da tabela de datas)', Ano:'Ano', MesNumero:'Mês 1–12', Mes:'Nome do mês', MesAno:'Ex.: jan 2025 (ordenada por AnoMes)', Trimestre:'T1…T4', AnoMes:'Ex.: 2025-01', AnoTrimestre:'Ex.: 2025 T1',
+  Data:'Data do movimento / mês / fotografia', Valor_Orcamentado:'Custo planeado (€)', ID_Movimento:'Chave do movimento de custo', Valor:'Custo real (€)', Fornecedor_Tipo:'Interno, Fornecedor, Subempreiteiro', Ano_Ficheiro:'Coluna nova: de que ficheiro anual veio (Append)',
+  ID_Tarefa:'Chave da tarefa', Tarefa:'Nome da tarefa', Responsavel:'Responsável pela tarefa', Data_Inicio_Prevista:'Início planeado', Data_Inicio_Real:'Início real', Horas_Previstas:'Esforço planeado', Horas_Reais:'Esforço consumido', Progresso:'% físico da tarefa (0–1)', Risco:'Baixo, Médio, Alto (ordenada por Risco_Ordem)', Atrasada:'Coluna condicional Sim/Não', Risco_Ordem:'1 = Alto, 2 = Médio, 3 = Baixo',
+  Valor_Planeado_Acum:'PV — trabalho que devia estar feito, em €', Valor_Ganho_Acum:'EV — trabalho efetivamente feito, a preços de orçamento'};
+const CAL_TYPES = {Date:'date', Ano:'int', MesNumero:'int', Mes:'text', MesAno:'text', Trimestre:'text', AnoMes:'text', AnoTrimestre:'text'};
+
+// ---------- vistas ----------
+const H = (crumbTitle, title, lede) => `<h1>${title}</h1>${lede ? `<p class="lede">${lede}</p>` : ''}`;
+const V_ = {};
+
+V_.inicio = () => `${H('', 'Dossiê do Projeto Livre — Gestão de Projetos', 'Dashboard em Power BI para um Diretor de Projetos acompanhar prazos, custos e execução de um portefólio de 32 obras da Vértice Construções (empresa fictícia). Cada botão abre uma parte do trabalho, pela ordem do guia.')}
+  <div class="grid g4">
+    ${kpiCard('Nº de projetos', '32', `${PL.estado_proj['Concluído']} concluídos · ${PL.estado_proj['Em curso']} em curso · ${PL.estado_proj['Suspenso']} suspenso`)}
+    ${kpiCard('Desvio de custo', sp(T.desvio), 'Custo real vs valor ganho', 'bad')}
+    ${kpiCard('SPI · índice de prazo', n2(T.SPI), 'Abaixo de 1 = atrasado', 'warn')}
+    ${kpiCard('Projetos a intervir', String(nInt), 'Desvio > 10 %, atraso > 30 dias ou SPI < 0,90', 'bad')}
+  </div>
+  <h2>Abrir uma secção</h2>
+  <div class="tiles">${[...SECTIONS.flatMap(g => g.items).filter(i => i[0] !== 'inicio'), ALL.assistente].map(i => `<button class="tile" data-go="${i[0]}">${ic(i[2])}<b>${i[1]}</b><span>${i[3]}</span></button>`).join('')}</div>`;
+
+function kpiCard(lab, val, note, state){ return `<div class="card kpi"><span class="lab">${lab}</span><span class="val">${val}</span>${note ? `<span class="note">${state ? `<span class="pill ${state}">${{good:'OK',warn:'Atenção',bad:'Crítico'}[state]}</span> ` : ''}${note}</span>` : ''}</div>` }
+
+V_.publico = () => `${H('', 'Quem vai utilizar a dashboard?', 'O guia diz que esta é a regra mais importante: o público-alvo define os KPIs, o nível de detalhe e os visuais. Aqui o utilizador é o Diretor de Projetos (gestor de portefólio).')}
+  <div class="grid g2">
+    <div class="card hl"><h3>Utilizador-tipo</h3><p style="margin:0">Diretor de Projetos da Vértice Construções. Acompanha 32 obras e 6 gestores de projeto. Usa a dashboard na reunião mensal de portefólio. Tem pouco tempo e precisa de saber <b>onde intervir primeiro</b>.</p></div>
+    <div class="card"><h3>O que precisa de ver primeiro</h3><ul class="clean ticks"><li>Quantos projetos estão atrasados e quanto</li><li>Quanto se está a gastar a mais pelo trabalho feito</li><li>A lista de projetos que exigem intervenção, por ordem</li><li>As causas: fase, tipo de obra, gestor</li></ul></div>
+  </div>
+  <h2>Decisões e onde a dashboard responde</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Decisão do Diretor de Projetos</th><th>Pergunta</th><th>KPI ou visual</th><th>Página</th></tr></thead><tbody>
+    <tr><td>Em que projetos intervir primeiro</td><td>Que projetos estão atrasados ou derrapam?</td><td>Projetos a intervir · tabela com semáforo</td><td>1 · Visão Geral</td></tr>
+    <tr><td>Reforçar equipas ou subempreiteiros</td><td>Que fases representam maior risco?</td><td>Desvio % e tarefas de risco alto por fase · matriz fase × risco</td><td>2 · Prazos e Riscos</td></tr>
+    <tr><td>Rever orçamentos e contingências</td><td>Que tipo de obra tem maiores desvios?</td><td>Desvio de custo % por tipo de projeto</td><td>1 · Visão Geral</td></tr>
+    <tr><td>Redistribuir projetos ou dar apoio a gestores</td><td>Que gestores têm piores resultados?</td><td>Desvio de custo % por gestor</td><td>2 · Prazos e Riscos</td></tr>
+    <tr><td>Renegociar prazos com clientes</td><td>O progresso real acompanha o previsto?</td><td>SPI · progresso previsto vs real</td><td>1 · Visão Geral</td></tr>
+  </tbody></table></div>
+  <h2>Porque é diferente de uma análise para o responsável financeiro</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Aspeto</th><th>Diretor de Projetos (esta dashboard)</th><th>Responsável financeiro</th></tr></thead><tbody>
+    <tr><td>Foco</td><td>Execução: prazos, progresso, risco por obra</td><td>Resultados: margem, tesouraria, faturação</td></tr>
+    <tr><td>KPIs</td><td>% atrasados, dias de atraso, SPI, CPI, desvio vs valor ganho, projetos a intervir</td><td>Receita, margem bruta, cash-flow, contas a receber, desvio vs orçamento anual</td></tr>
+    <tr><td>Nível de detalhe</td><td>Projeto, fase e tarefa</td><td>Centro de custo, conta, mês</td></tr>
+    <tr><td>Visuais</td><td>Tabela de intervenção com semáforo, dispersão atraso × desvio, progresso previsto vs real</td><td>Cascata (waterfall) de resultados, colunas mensais, tabelas contabilísticas</td></tr>
+    <tr><td>Tempo</td><td>Acumulado até à data (fotografia do fim do mês)</td><td>Períodos fechados: mês, trimestre, ano</td></tr>
+  </tbody></table></div>`;
+
+V_.objetivo = () => `${H('', 'Objetivo de negócio — Tema 3: Gestão de Projetos', 'Uma empresa gere vários projetos e precisa de acompanhar os prazos, os custos e a execução das atividades.')}
+  <div class="grid g2">${[
+    ['Que projetos estão atrasados?', `${T.atrasados} de 32 projetos (${pc(V['% Projetos Atrasados'], 0)}) terminaram ou vão terminar depois do prazo. A média de atraso é de ${n2(V['Dias de Atraso Médio (projetos atrasados)'], 0)} dias.`, 'Coluna Dias_Atraso (Power Query) · medidas Projetos Atrasados e % Projetos Atrasados · página 1'],
+    ['Quais apresentam maiores desvios orçamentais?', `As obras de reabilitação (${sp(reab['Desvio%'])}). O projeto com maior desvio é ${esc(PL.intervir[0].proj)} (${sp(PL.intervir[0].desvio)}).`, 'Medidas Desvio de Custo € e %, CPI · tabela de intervenção e barras por tipo · página 1'],
+    ['Que tarefas ou fases representam maior risco?', `Instalações Técnicas: ${sp(f5['Desvio%'])} de desvio e ${pc(f5.Alto, 0)} das tarefas com risco alto.`, 'Medidas % Tarefas Alto Risco, Desvio de Custo % por fase · matriz fase × risco · página 2'],
+    ['Como se comparam o progresso previsto e o real?', `A 31/12/2025 está feito ${pc(T.SPI, 0)} do trabalho que devia estar feito (SPI ${n2(T.SPI)}).`, 'Medidas Progresso Previsto %, Progresso Real %, SPI · gráfico de linhas · página 1'],
+  ].map(([q, a, w]) => `<div class="card"><h3>${q}</h3><p style="margin:0 0 8px">${a}</p><span class="muted" style="font-size:12.5px">${w}</span></div>`).join('')}</div>
+  <h2>Requisito adicional: indicadores de atraso e de desvio, e projetos a intervir</h2>
+  <p>Critério de intervenção prioritária, aplicado aos projetos não concluídos: <b>desvio de custo &gt; 10 %</b> <i>ou</i> <b>atraso &gt; 30 dias</b> <i>ou</i> <b>SPI &lt; 0,90</b>. Resultado: <b>${nInt} projetos</b>.</p>
+  ${interventionTable()}
+  <h2>Utilizador-tipo e termos de pesquisa</h2>
+  <p>Diretor de projetos ou gestor de portefólio. Termos sugeridos pelo guia para procurar dados: <span class="mono">project management · project tasks · project portfolio · project budget</span>.</p>`;
+
+function interventionTable(){ return `<div class="tbl-wrap"><table><thead><tr><th>Projeto</th><th>Gestor</th><th>Tipo</th><th>Estado</th><th>Dias de atraso</th><th>Desvio de custo</th><th>SPI</th></tr></thead><tbody>${
+  PL.intervir.map(p => `<tr><td>${esc(p.proj)}</td><td>${esc(p.gestor)}</td><td>${esc(p.tipo)}</td><td>${esc(p.estado)}</td><td class="num">${p.atraso}</td>
+  <td class="num"><span class="pill ${pillFor(p.desvio, .10, .05)}">${sp(p.desvio)}</span></td><td class="num"><span class="pill ${pillFor(p.spi, .90, .97, true)}">${n2(p.spi)}</span></td></tr>`).join('')}</tbody></table></div>` }
+
+V_.origem = () => `${H('', 'Como foram obtidos os dados', 'Conjunto de dados fictício, criado em Excel com a ajuda de IA (script Python com semente fixa 2025). O guia permite esta opção desde que seja indicada.')}
+  <div class="grid g3">
+    <div class="card hl"><h3>Fonte</h3><p style="margin:0">Excel <span class="mono">Dados_Gestao_Projetos.xlsx</span>, gerado por script. Não representa empresas, clientes ou pessoas reais. Uso livre para formação.</p></div>
+    <div class="card"><h3>Porquê fictício</h3><p style="margin:0">Os datasets públicos de projetos raramente juntam orçamento mensal, custos reais, tarefas e progresso dos mesmos projetos. Um conjunto próprio permite um modelo em estrela completo e uma análise com causas.</p></div>
+    <div class="card"><h3>Reprodutível</h3><p style="margin:0">Os scripts estão no ZIP (<span class="mono">scripts/gerar_dados.py</span>). Com a mesma semente, geram exatamente os mesmos dados.</p></div>
+  </div>
+  <h2>Como foram gerados</h2>
+  <ol style="max-width:80ch;display:flex;flex-direction:column;gap:6px;padding-left:20px">
+    <li>Definidos 32 projetos (4 tipos), 10 clientes, 6 gestores, 7 fases e 5 categorias de custo.</li>
+    <li>Para cada projeto foram sorteados a data de início (2024–2025), a duração e o orçamento, dentro de intervalos realistas para o tipo de obra.</li>
+    <li>O orçamento foi repartido por fase e categoria e distribuído pelos meses do plano (tabela tOrcamento).</li>
+    <li>O custo real resulta do plano com fatores de desvio por tipo de obra, gestor, fase e categoria, mais variação aleatória. Cada mês foi dividido em 1 a 3 movimentos com datas ao acaso.</li>
+    <li>O calendário real estica as fases conforme o atraso de cada projeto. Daí saem as datas reais, o progresso (PV/EV) e o estado das tarefas à data de corte.</li>
+    <li>Foram introduzidos erros de propósito, para tratar no Power Query: duplicados, nulos, espaços a mais, maiúsculas e textos diferentes para o mesmo valor.</li>
+  </ol>
+  <h2>Conteúdo do Excel</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Tabela Excel</th><th>Linhas no ficheiro</th><th>Linhas depois da limpeza</th></tr></thead><tbody>${
+    Object.entries(PL.rows).map(([k, [cl, di]]) => `<tr><td class="mono">${k}</td><td class="num">${nf(di)}</td><td class="num">${nf(cl)}</td></tr>`).join('')}</tbody></table></div>
+  <p class="muted" style="font-size:13px">Folhas de apoio no Excel: LEIA-ME (origem e problemas propositados), Dicionario, Modelo_Dados e Validacao (totais esperados).</p>
+  <h2>Alternativas reais, se quiser trocar de dataset</h2>
+  <p>O guia sugere o Kaggle (Datasets → pesquisar → Download → Power BI: Get data → Text/CSV), dados.gov.pt, INE ou Eurostat.</p>
+  <div class="row">${['project management', 'project tasks', 'project portfolio', 'project budget'].map(q => `<a class="btn" href="https://www.kaggle.com/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">Kaggle: ${q} ↗</a>`).join('')}</div>`;
+
+V_.adequado = () => { const items = [
+    ['Tem uma coluna de datas com pelo menos 12 meses', `Custos de janeiro de 2024 a dezembro de 2025 (24 meses). O orçamento vai até 2026, para os projetos ainda em curso.`, 'tCustos[Data], tOrcamento[Data], tProgresso[Data]'],
+    ['Tem medidas numéricas e pelo menos 2 categorias', 'Valores em € (orçamento, custo, PV, EV), horas, dias e % de progresso. Categorias: tipo de projeto, fase, categoria de custo, gestor, distrito, estado, risco.', 'Mais de 10 colunas para segmentar'],
+    ['Tem volume suficiente e não vem agregado', `${nf(PL.rows['tCustos2024+2025'][0])} movimentos de custo, ${nf(PL.rows.tOrcamento[0])} linhas de orçamento, ${nf(PL.rows.tTarefas[0])} tarefas e ${nf(PL.rows.tProgresso[0])} fotografias de progresso. Uma linha por movimento ou tarefa, sem totais.`, 'Granularidade fina em todas as tabelas de factos'],
+    ['Os valores são credíveis', 'Sem datas impossíveis (o fim é sempre depois do início) e sem custos negativos. Distribuições com variação: desvios de −10 % a +33 % por projeto. Como é sintético, isso está indicado.', 'Sintético: indicado no Excel, no relatório e aqui'],
+    ['A fonte e a licença estão identificadas', 'Fonte: conjunto fictício gerado com IA/script Python (semente 2025). Licença: uso livre para formação.', 'Folha LEIA-ME do Excel'],
+  ];
+  return `${H('', 'O dataset é adequado?', 'Antes de construir, o guia pede que se confirme que o dataset cumpre estes 5 pontos.')}
+  <div class="grid" style="gap:10px">${items.map(([c, e, w]) => `<div class="card" style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start"><span class="pill good">Cumpre</span><div><h3>${c}</h3><p style="margin:0 0 4px">${e}</p><span class="muted" style="font-size:12.5px">${w}</span></div></div>`).join('')}</div>
+  <p class="callout warn" style="margin-top:16px">Atenção: o guia avisa que um dataset "perfeito de mais" costuma ser sintético. Este é sintético e isso está declarado. Os erros de qualidade foram introduzidos de propósito, para mostrar a limpeza no Power Query.</p>`; };
+
+V_.pesquisa = () => `${H('', 'Pesquisa e construção autónoma', 'Fase 2 do guia: preparar os dados, validar se são adequados e construir a solução. Antes de cada decisão foram analisadas as cinco questões abaixo.')}
+  <div class="grid g2">${[
+    ['Como preparar os dados no Power Query', ['Parâmetros CaminhoExcel e DataCorte (reutilização)', 'Append dos custos 2024 + 2025, com a coluna Ano_Ficheiro', 'Trim e Capitalize Each Word antes de Remove Duplicates', 'Remove nulos (Valor e ID_Projeto)', 'Replace Values para "Concluida" e "em curso"', 'Merge de clientes e gestores em dProjetos (consultas auxiliares sem carregamento)', 'Custom Column Dias_Atraso e Conditional Columns Situacao_Prazo e Atrasada']],
+    ['Como estruturar o modelo', ['Estrela: 4 factos e 4 dimensões partilhadas', 'Relações *:1 e filtro numa só direção', 'Um único Calendário em DAX, marcado como tabela de datas', 'Segunda data das tarefas como relação inativa (USERELATIONSHIP)', 'Sem relação entre factos nem entre dProjetos e Calendário (evita ambiguidade)']],
+    ['Que medidas DAX criar', ['Contagens e percentagens (COUNTROWS, DIVIDE)', 'Orçamento vs real com CALCULATE e KEEPFILTERS', 'Valor ganho (EV/PV) como medida semi-aditiva (VAR + MAX)', 'Inteligência temporal: SAMEPERIODLASTYEAR, TOTALYTD', 'Intervenção prioritária: FILTER com transição de contexto', 'Medidas de cor para formatação condicional']],
+    ['Que visualizações e layout utilizar', ['6 KPIs no topo de cada página (o mais importante primeiro)', 'Colunas + linha para orçamento vs real no tempo', 'Barras ordenadas para rankings (tipo, gestor)', 'Tabela com semáforo para a lista de intervenção', 'Dispersão atraso × desvio para cruzar os dois problemas', 'Barra lateral com navegação, limpar filtros e 5 segmentadores']],
+    ['Como organizar o storytelling', ['Página 1 · O quê: estado do portefólio e lista de projetos a intervir', 'Página 2 · Porquê: fases, tarefas, risco e gestores', 'Conclusões e recomendações saem diretamente dos visuais', 'Títulos que dizem o que o visual mostra, com unidades (€, %, dias)']],
+    ['Como validar', ['Folha Validacao do Excel com os totais esperados depois da limpeza', 'Comparar as medidas sem filtros com esses totais', 'Testar segmentadores: Tipo = Reabilitação → ' + sp(reab['Desvio%']), 'Testar Fase = Instalações Técnicas → ' + sp(f5['Desvio%'])]],
+  ].map(([t, l]) => `<div class="card"><h3>${t}</h3><ul class="clean ticks" style="font-size:14px">${l.map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>`;
+
+V_.tabelas = () => {
+  const order = ['fCustos', 'fOrcamento', 'fTarefas', 'fProgresso', 'dProjetos', 'dFases', 'dCategorias', 'dCalendario'];
+  const roleLab = {fact:['Facto','bad'], dim:['Dimensão','info'], cal:['Dimensão · Calendário','info'], meas:['Medidas','warn']};
+  const block = name => { const t = M.tables[name] || {cols:['Ignorar'], types:['int'], hidden:[true]}; const inf = TABLE_INFO[name];
+    const rows = inf.rows ? PL.rows[inf.rows] : null;
+    const types = name === 'dCalendario' ? t.cols.map(c => CAL_TYPES[c]) : t.types;
+    return `<details class="acc"${name === 'fCustos' ? ' open' : ''}><summary><b class="mono" style="font-size:14px">${name}</b><span class="pill ${roleLab[inf.role][1]}">${roleLab[inf.role][0]}</span><span class="muted" style="font-size:13px">${inf.grain}${rows ? ` · ${nf(rows[0])} linhas` : ''}</span></summary>
+    <div class="body"><p style="margin:0 0 6px">${inf.desc}</p><p class="muted" style="margin:0 0 10px;font-size:13px">Origem: ${inf.src}</p>
+    <div class="tbl-wrap"><table><thead><tr><th>Coluna</th><th>Tipo de dados (Power BI)</th><th>Descrição</th></tr></thead><tbody>${
+      t.cols.map((c, i) => `<tr><td class="mono">${c}${i === 0 && inf.role !== 'fact' && inf.role !== 'meas' ? ' <span class="pill info">chave</span>' : ''}${t.hidden && t.hidden[i] ? ' <span class="pill warn">oculta</span>' : ''}</td><td>${TYPE[T2PBI[types[i]]]}</td><td>${esc(COL_DESC[c] || (name === '_Medidas' ? 'Coluna técnica (a tabela só serve para guardar medidas)' : ''))}</td></tr>`).join('')}</tbody></table></div></div></details>`; };
+  return `${H('', 'Tabelas, esquemas e tipos de dados', 'O modelo tem 4 tabelas de factos, 4 dimensões e a tabela de medidas. Abra cada tabela para ver as colunas, o tipo de dados no Power BI e a descrição.')}
+  <div class="row" style="margin-bottom:12px">${Object.entries({string:'Texto', dateTime:'Data', decimal:'Decimal fixo (€)', int64:'Número inteiro', double:'Número decimal'}).map(([k, v]) => `<span class="tag">${v} = <span class="mono">${k}</span></span>`).join('')}</div>
+  <h2>Tabelas de factos</h2>${order.slice(0, 4).map(block).join('')}
+  <h2>Dimensões</h2>${order.slice(4).map(block).join('')}
+  <h2>Medidas e consultas auxiliares</h2>${block('_Medidas')}
+  <div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Consulta (não carregada)</th><th>Tipo</th><th>Função</th></tr></thead><tbody>
+    <tr><td class="mono">CaminhoExcel</td><td>Parâmetro · Texto</td><td>Caminho do ficheiro Excel (aspas e espaços são removidos automaticamente)</td></tr>
+    <tr><td class="mono">DataCorte</td><td>Parâmetro · Data</td><td>31/12/2025 — usada no cálculo dos dias de atraso dos projetos ainda abertos</td></tr>
+    <tr><td class="mono">stg_Clientes</td><td>Consulta auxiliar</td><td>Limpa tClientes; é junta a dProjetos com Merge</td></tr>
+    <tr><td class="mono">stg_Gestores</td><td>Consulta auxiliar</td><td>Limpa tGestores (Trim, Capitalize); é junta a dProjetos com Merge</td></tr>
+  </tbody></table></div>`;
+};
+
+// modelo interativo
+const MB = { // posição das caixas no diagrama
+  dProjetos:[340,20], dCalendario:[930,20], fOrcamento:[20,330], fCustos:[350,330], fTarefas:[680,330], fProgresso:[1010,330],
+  dFases:[520,660], dCategorias:[130,660], _Medidas:[1010,690] };
+const BOXW = 250;
+function modelSvg(){
+  const show = n => n === '_Medidas' ? ['42 medidas DAX'] : (M.tables[n]?.cols || []).filter((c, i) => !(M.tables[n].hidden || [])[i] || /^ID_|^Data/.test(c)).slice(0, 9);
+  const hgt = n => 38 + 19 * show(n).length + 8;
+  const anchor = (n, side) => { const [x, y] = MB[n], h = hgt(n); return side === 't' ? [x + BOXW / 2, y] : side === 'b' ? [x + BOXW / 2, y + h] : side === 'l' ? [x, y + h / 2] : [x + BOXW, y + h / 2] };
+  let rels = '';
+  M.rels.forEach((r, i) => { const [f, fc, t, tc, act] = r; const inactive = act === false;
+    const fy = MB[f][1], ty = MB[t][1];
+    let p, q; if (ty < fy) { p = anchor(f, 't'); q = anchor(t, 'b') } else { p = anchor(f, 'b'); q = anchor(t, 't') }
+    const off = (['fOrcamento', 'fCustos', 'fTarefas', 'fProgresso'].indexOf(f) - 1.5) * 22;
+    p = [p[0] + off * .6, p[1]]; q = [q[0] + off, q[1]];
+    if (inactive) { p = anchor(f, 'r'); p = [p[0], p[1] + 10]; q = anchor(t, 'b'); q = [q[0] + 60, q[1]] }
+    const my = (p[1] + q[1]) / 2 + (t === 'dCalendario' ? 14 : t === 'dFases' ? -10 : t === 'dCategorias' ? 12 : -14);
+    const d = inactive ? `M${p[0]} ${p[1]} H${p[0] + 26} V${q[1] + 70} H${q[0]} V${q[1]}` : `M${p[0]} ${p[1]} V${my} H${q[0]} V${q[1]}`;
+    rels += `<path class="rel${inactive ? ' inactive' : ''}" data-from="${f}" data-to="${t}" data-i="${i}" d="${d}"><title>${f}[${fc}] * → 1 ${t}[${tc}]${inactive ? ' (inativa)' : ''}</title></path>`;
+    rels += `<text class="relmark" x="${p[0] + 4}" y="${p[1] + (ty < fy ? -6 : 14)}" fill="var(--accent)">*</text><circle cx="${q[0]}" cy="${q[1]}" r="3.6" fill="var(--steel)" data-from="${f}" data-to="${t}" class="reldot"/>`;
+  });
+  const boxes = Object.keys(MB).map(n => { const [x, y] = MB[n], role = TABLE_INFO[n].role, cls = role === 'fact' ? 'fact' : role === 'meas' ? 'meas' : 'dim';
+    return `<g class="mt ${cls}" data-t="${n}" tabindex="0" role="button" aria-label="Tabela ${n}"><rect class="box" x="${x}" y="${y}" width="${BOXW}" height="${hgt(n)}" rx="9"/>
+      <rect class="head" x="${x}" y="${y}" width="${BOXW}" height="28" rx="9"/><rect class="head" x="${x}" y="${y + 16}" width="${BOXW}" height="12"/>
+      <text class="t" x="${x + 11}" y="${y + 20}">${n}</text><text x="${x + BOXW - 10}" y="${y + 19}" text-anchor="end" font-size="10.5" fill="#fff" opacity=".85">${{fact:'FACTO', dim: n === 'dCalendario' ? 'CALENDÁRIO' : 'DIMENSÃO', meas:'MEDIDAS'}[cls]}</text>
+      ${show(n).map((c, i) => `<text class="c${i === 0 && cls === 'dim' ? ' k' : ''}" x="${x + 12}" y="${y + 50 + 19 * i}">${c}${i === 0 && cls === 'dim' ? '  · 1' : ''}</text>`).join('')}</g>` }).join('');
+  return `<svg viewBox="0 0 1280 790" id="msvg" aria-label="Modelo de dados em estrela">${rels}${boxes}</svg>`;
+}
+V_.modelo = () => `${H('', 'Modelo de dados interativo', 'Clique numa tabela para ver as suas relações. Use os botões para ver o sentido do filtro, a relação inativa e o Calendário.')}
+  <div class="row" style="margin-bottom:12px">
+    <div class="seg" role="group" aria-label="Vistas do modelo">
+      <button data-mv="all" aria-pressed="true">Modelo completo</button><button data-mv="flow" aria-pressed="false">Sentido do filtro</button>
+      <button data-mv="inactive" aria-pressed="false">Relação inativa</button><button data-mv="cal" aria-pressed="false">Calendário</button><button data-mv="facts" aria-pressed="false">Factos vs dimensões</button>
+    </div>
+  </div>
+  <div class="model-wrap"><div class="model-svg" id="mbox">${modelSvg()}</div><div class="card" id="mpanel"></div></div>
+  <h2>Como foram evitadas relações ambíguas e um modelo complexo</h2>
+  <div class="grid g2">${[
+    ['Uma só direção de filtro', 'Todas as 15 relações são Many-to-One (*:1) e filtram da dimensão para o facto. Não há relações bidirecionais, que criariam caminhos ambíguos entre os 4 factos.'],
+    ['Factos nunca ligados entre si', 'fCustos, fOrcamento, fTarefas e fProgresso só se encontram através das dimensões partilhadas. Assim, comparar orçamento com real funciona sem relações muitos-para-muitos.'],
+    ['dProjetos sem ligação ao Calendário', 'As datas do projeto (início, fim previsto, fim real) são atributos. Ligar dProjetos ao Calendário criaria dois caminhos do Calendário até cada facto, o que é ambíguo.'],
+    ['Estrela em vez de floco de neve', 'Clientes e gestores entram em dProjetos com Merge no Power Query. As consultas auxiliares não são carregadas, por isso há menos tabelas e menos relações.'],
+    ['Duas datas na mesma tabela', 'Em fTarefas, Data_Fim_Prevista é a relação ativa e Data_Fim_Real é inativa (tracejado). A medida Tarefas Concluídas (data real) ativa-a com USERELATIONSHIP.'],
+    ['Um único Calendário', 'dCalendario é criado em DAX com anos completos e marcado como tabela de datas. Serve os 4 factos e as funções de inteligência temporal.'],
+  ].map(([t, d]) => `<div class="card"><h3>${t}</h3><p style="margin:0;font-size:14px">${d}</p></div>`).join('')}</div>`;
+
+function modelPanel(n){
+  const p = $('#mpanel'); if (!p) return;
+  if (!n) { p.innerHTML = `<h3>Legenda</h3><ul class="clean" style="font-size:13.5px"><li><span class="pill bad">Facto</span> eventos e valores (laranja)</li><li><span class="pill info">Dimensão</span> quem, o quê, quando (azul)</li><li><b class="mono" style="color:var(--accent)">*</b> lado muitos · <b style="color:var(--steel)">●</b> lado um</li><li><span style="color:var(--accent)">- - -</span> relação inativa</li></ul><p class="muted" style="font-size:13px;margin-bottom:0">Clique numa tabela do diagrama para ver as relações.</p>`; return }
+  const inf = TABLE_INFO[n], rs = M.rels.filter(r => r[0] === n || r[2] === n);
+  p.innerHTML = `<h3 class="mono">${n}</h3><p style="font-size:13.5px;margin:0 0 10px">${inf.desc}</p>${rs.length ? `<div style="font:600 11px var(--f-mono);color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${rs.length} relações</div><ul class="clean" style="font-size:12.5px">${
+    rs.map(r => `<li class="mono">${r[0]}[${r[1]}] <b style="color:var(--accent)">*</b>→<b style="color:var(--steel)">1</b> ${r[2]}[${r[3]}]${r[4] === false ? ' <span class="pill warn">inativa</span>' : ''}<br><span class="muted">filtro: ${r[2]} → ${r[0]}</span></li>`).join('')}</ul>` : '<p class="muted" style="font-size:13px">Sem relações: a tabela de medidas não precisa delas.</p>'}<button class="btn" style="margin-top:12px" data-mclear>Ver modelo completo</button>`;
+}
+function modelSelect(n){
+  document.querySelectorAll('#msvg .mt').forEach(g => { g.classList.toggle('sel', g.dataset.t === n); g.classList.toggle('dimmed', !!n && g.dataset.t !== n && !M.rels.some(r => (r[0] === n && r[2] === g.dataset.t) || (r[2] === n && r[0] === g.dataset.t))) });
+  document.querySelectorAll('#msvg .rel').forEach(r => { const on = n && (r.dataset.from === n || r.dataset.to === n); r.classList.toggle('on', !!on); r.classList.toggle('dimmed', !!n && !on) });
+  modelPanel(n);
+}
+function modelView(v){
+  document.querySelectorAll('[data-mv]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mv === v)));
+  const box = $('#mbox'); box.classList.toggle('flow', v === 'flow'); modelSelect(null);
+  const p = $('#mpanel');
+  if (v === 'inactive') { document.querySelectorAll('#msvg .rel').forEach(r => { const on = r.classList.contains('inactive'); r.classList.toggle('on', on); r.classList.toggle('dimmed', !on) });
+    document.querySelectorAll('#msvg .mt').forEach(g => g.classList.toggle('dimmed', !['fTarefas', 'dCalendario'].includes(g.dataset.t)));
+    p.innerHTML = `<h3>Relação inativa</h3><p style="font-size:13.5px">fTarefas tem duas datas. A relação ativa usa Data_Fim_Prevista e a inativa (tracejado) usa Data_Fim_Real.</p><pre>Tarefas Concluídas (data real) =
+CALCULATE(
+    [Nº Tarefas],
+    USERELATIONSHIP(fTarefas[Data_Fim_Real],
+                    dCalendario[Date])
+)</pre>` }
+  if (v === 'cal') { modelSelect('dCalendario'); p.innerHTML = `<h3>Tabela Calendário</h3><p style="font-size:13.5px">Criada em DAX e marcada como tabela de datas (Date). Liga aos 4 factos: fOrcamento[Data], fCustos[Data], fProgresso[Data] e fTarefas[Data_Fim_Prevista].</p><pre>${esc('dCalendario =\n' + M.tables.dCalendario.src)}</pre>` }
+  if (v === 'flow') p.innerHTML = `<h3>Sentido do filtro</h3><p style="font-size:13.5px;margin:0">O tracejado em movimento mostra o filtro a descer de cada dimensão para os factos. Um segmentador em dProjetos (ex.: Tipo de projeto) filtra os 4 factos ao mesmo tempo. Um filtro num facto nunca sobe para a dimensão (direção única).</p>`;
+  if (v === 'facts') { document.querySelectorAll('#msvg .mt').forEach(g => g.classList.toggle('dimmed', g.classList.contains('dim') || g.classList.contains('meas')));
+    p.innerHTML = `<h3>Factos (eventos e valores)</h3><ul class="clean" style="font-size:13.5px"><li><b>fCustos</b> — movimentos de custo real</li><li><b>fOrcamento</b> — custo planeado por mês</li><li><b>fTarefas</b> — execução das atividades</li><li><b>fProgresso</b> — PV e EV no fim de cada mês</li></ul><p class="muted" style="font-size:13px">Dimensões: dProjetos (inclui cliente e gestor), dFases, dCategorias, dCalendario.</p>` }
+}
+
+V_.medidas = () => {
+  const ideas = [['Nº de projetos', 'Nº Projetos'], ['% de projetos atrasados', '% Projetos Atrasados'], ['Dias de atraso médios', 'Dias de Atraso Médio'], ['Orçamento vs custo real', 'Orçamento até à Data · Custo Real · Desvio vs Orçamento €'],
+    ['Desvio orçamental em %', 'Desvio de Custo % (vs valor ganho) · Desvio vs Orçamento %'], ['Progresso previsto vs real', 'Progresso Previsto % · Progresso Real % · SPI'], ['Tarefas por estado', 'Nº Tarefas (com fTarefas[Estado]) · Tarefas Atrasadas'],
+    ['Custo por fase', 'Custo Real (com dFases[Fase]) · Desvio de Custo % por fase'], ['Projetos que exigem intervenção', 'Projetos Intervenção Prioritária · Estado de Intervenção']];
+  const folders = [...new Set(M.measures.map(m => m[0]))];
+  return `${H('', 'Ideias de medidas e medidas criadas', `O guia pede pelo menos 10 medidas explícitas numa tabela _Medidas. Foram criadas ${M.measures.length}, organizadas em 6 pastas.`)}
+  <h2>As ideias do guia para o Tema 3</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Ideia de medida (guia)</th><th>Medida(s) criada(s)</th><th></th></tr></thead><tbody>${ideas.map(([a, b]) => `<tr><td>${a}</td><td class="mono">${b}</td><td><span class="pill good">Feito</span></td></tr>`).join('')}</tbody></table></div>
+  <h2>Outras medidas acrescentadas</h2>
+  <p>CPI e SPI (valor ganho), Custo Real Acumulado, Custo Real Ano Anterior, Variação Custo vs Ano Anterior %, Custo Real YTD, Orçamento YTD, Desvio de Horas % (SUMX), Tarefas Concluídas (data real, USERELATIONSHIP), % Tarefas Alto Risco e medidas de cor para a formatação condicional.</p>
+  <h2>Todas as ${M.measures.length} medidas</h2>
+  <div class="row" style="margin-bottom:10px"><input type="search" id="mq" placeholder="Procurar medida ou função (ex.: CALCULATE)" aria-label="Procurar medidas">
+    <div class="seg" role="group" aria-label="Pasta">${['Todas', ...folders].map((f, i) => `<button data-mf="${esc(f)}" aria-pressed="${i === 0}">${esc(f.replace(/^\d\. /, ''))}</button>`).join('')}</div></div>
+  <div id="mlist"></div>`;
+};
+function renderMeasures(){
+  const q = ($('#mq')?.value || '').toLowerCase(), f = document.querySelector('[data-mf][aria-pressed="true"]')?.dataset.mf || 'Todas';
+  const list = M.measures.filter(m => (f === 'Todas' || m[0] === f) && (m[1] + m[2] + m[4]).toLowerCase().includes(q));
+  $('#mlist').innerHTML = list.length ? list.map(m => `<details class="acc"><summary><b>${esc(m[1])}</b><span class="tag">${esc(m[0].replace(/^\d\. /, ''))}</span>${m[3] ? `<span class="muted mono" style="font-size:11.5px">${esc(m[3].split(';')[0])}</span>` : ''}</summary><div class="body">${m[4] ? `<p style="margin:0 0 6px;font-size:14px">${esc(m[4])}</p>` : ''}<pre>${esc(m[1] + ' =\n' + m[2])}</pre></div></details>`).join('') : '<p class="muted">Nenhuma medida corresponde à pesquisa.</p>';
+}
+
+V_.areas = () => `${H('', 'O que foi feito em cada área das aulas', 'O quadro "Resumo do que já fizemos" do guia, com o que foi aplicado neste projeto em cada área.')}
+  <div class="tbl-wrap"><table><thead><tr><th>Área</th><th>O que já trabalhámos</th><th>O que foi feito no projeto</th><th>Etapa</th></tr></thead><tbody>
+  <tr><td><b>Ambiente e Visualizations</b></td><td>Campos e propriedades dos visuais, gráficos principais, tabelas e matrizes, slicers, formatação</td><td>Cartões KPI, colunas + linha, barras, linhas, dispersão, anel, tabela com semáforo e matriz fase × risco. 5 segmentadores. Tema escuro com unidades nos títulos.</td><td>D</td></tr>
+  <tr><td><b>Power Query</b></td><td>Importar, tipos de dados, remover duplicados e nulos, Replace Values, Trim, Add Column</td><td>Tipos definidos em todas as consultas. Trim e Capitalize Each Word, Replace Values, Remove Duplicates e nulos. Append, Merge, Custom Column e Conditional Columns. Parâmetros.</td><td>A</td></tr>
+  <tr><td><b>Modelação de dados</b></td><td>Factos e dimensões, relações Many-to-One, direção do filtro, relações inativas</td><td>Estrela com 4 factos e 4 dimensões, 15 relações *:1 numa só direção, relação inativa em fTarefas e uma tabela de medidas.</td><td>B</td></tr>
+  <tr><td><b>DAX</b></td><td>Tabela de medidas, SUM, AVERAGE, COUNTROWS, DIVIDE, CALCULATE, FILTER, ALL, SUMX, IF, inteligência temporal</td><td>${M.measures.length} medidas: SUM, AVERAGE, COUNTROWS, DIVIDE, CALCULATE (KEEPFILTERS, REMOVEFILTERS — equivalente moderno de ALL), FILTER, SUMX, IF, SWITCH, VAR, SAMEPERIODLASTYEAR, TOTALYTD, USERELATIONSHIP.</td><td>C</td></tr>
+  <tr><td><b>Exemplos de dashboards</b></td><td>Várias páginas, formatação condicional, navegação e storytelling</td><td>2 páginas (O quê → Porquê), botões de navegação, Limpar todos os filtros e semáforo (cor por medida).</td><td>D e E</td></tr>
+  <tr><td><b>Criação do Calendário</b></td><td>Instruções na Etapa B do guia</td><td>dCalendario = ADDCOLUMNS(CALENDAR(…)) com Ano, MesNumero, Mes, MesAno, Trimestre, AnoMes, AnoTrimestre. Marcado como tabela de datas.</td><td>B</td></tr>
+  </tbody></table></div>`;
+
+V_.abordagens = () => { const A = [
+  ['Modelação', [
+    ['Estrela com 4 factos e dimensões partilhadas', 'Uma tabela única com tudo', 'A tabela única repete dados e não permite comparar orçamento (mensal) com custos (diários) sem duplicar valores.'],
+    ['Merge de clientes e gestores em dProjetos', 'Floco de neve (dClientes e dGestores ligadas a dProjetos)', 'Menos tabelas e relações; os filtros chegam aos factos por um só passo.'],
+    ['Relação inativa + USERELATIONSHIP', 'Dois calendários (data prevista e data real)', 'Um calendário evita segmentadores duplicados e confusão no utilizador.'],
+    ['Filtro numa só direção', 'Relações bidirecionais', 'Bidirecional entre 4 factos cria ambiguidade e resultados difíceis de explicar.']]],
+  ['DAX', [
+    ['Desvio de custo vs valor ganho (EV)', 'Desvio simples: custo real − orçamento até à data', 'Um projeto atrasado gasta menos e parece poupar. O EV compara com o trabalho feito. As duas versões existem no modelo.'],
+    ['Medidas explícitas na tabela _Medidas', 'Agregações automáticas dos visuais', 'As medidas são reutilizáveis, têm formato e descrição. O modelo desencoraja medidas implícitas.'],
+    ['Dias_Atraso como coluna no Power Query', 'Coluna calculada em DAX', 'A transformação fica na origem e é testável no Power Query; o modelo fica mais leve.'],
+    ['VAR UltimaData + CALCULATE para PV/EV', 'SUM direto de fProgresso', 'fProgresso é acumulado: somar meses daria valores errados (semi-aditivo).']]],
+  ['Visualização', [
+    ['Cartões KPI com rótulos claros', 'Gauges (velocímetros)', 'Os gauges ocupam espaço e leem-se pior. Usar o cartão com o semáforo na tabela.'],
+    ['Barras horizontais ordenadas', 'Gráfico circular por tipo/gestor', 'Com 4 a 7 categorias, as barras comparam melhor do que fatias.'],
+    ['Tabela com semáforo para intervenção', 'Matriz sem cores', 'A cor (verde/amarelo/vermelho) chama a atenção para o que exige decisão.'],
+    ['Dispersão atraso × desvio', 'Dois gráficos separados', 'Mostra num só visual os projetos com os dois problemas (canto superior direito).']]],
+];
+  return `${H('', 'Comparar abordagens e boas práticas', 'O guia pede que se discutam alternativas de modelação, DAX e visualização. Para cada decisão: a opção escolhida, a alternativa e porquê.')}
+  ${A.map(([g, rows]) => `<h2>${g}</h2><div class="tbl-wrap"><table><thead><tr><th>Escolhido</th><th>Alternativa</th><th>Porquê</th></tr></thead><tbody>${rows.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`).join('')}
+  <h2>Boas práticas aplicadas</h2>
+  <div class="grid g3">${['Nomes consistentes: prefixo d para dimensões, f para factos', 'Colunas-chave e técnicas ocultas no modelo', 'Medidas em pastas e com descrição', 'Parâmetros para o caminho e a data de corte', 'DIVIDE em vez de "/" (evita erros de divisão por zero)', 'Ordenação explícita (Mes por MesNumero, Fase por Ordem)', 'Títulos com unidades (€, %, dias)', 'Validação dos totais fora do Power BI', 'Fonte e natureza sintética dos dados indicadas'].map(b => `<div class="card flat" style="padding:12px 14px;font-size:14px">${b}</div>`).join('')}</div>`; };
+
+V_.kpis = () => { const prog = PL.prog;
+  return `${H('', 'KPIs relevantes', 'Valores sem filtros, à data de corte de 31/12/2025. São os mesmos KPIs das duas páginas da dashboard Power BI.')}
+  <h2>Página 1 · Visão Geral</h2>
+  <div class="k3">
+    ${kpiCard('Nº de projetos', '32', 'Medida Nº Projetos')}
+    ${kpiCard('% de projetos atrasados', pc(V['% Projetos Atrasados'], 0), `${T.atrasados} projetos com Dias_Atraso > 0`, 'warn')}
+    ${kpiCard('Custo real acumulado', meur(T.AC), `Valor ganho: ${meur(T.EV)}`)}
+    ${kpiCard('Desvio de custo', sp(T.desvio), `${meur(T.AC - T.EV)} acima do trabalho feito`, 'bad')}
+    ${kpiCard('SPI · índice de prazo', n2(T.SPI), 'EV ÷ PV · abaixo de 1 = atrasado', 'warn')}
+    ${kpiCard('Projetos a intervir', String(nInt), 'Critério: desvio > 10 %, atraso > 30 d ou SPI < 0,90', 'bad')}
+  </div>
+  <div class="charts" style="margin-top:14px">
+    <div class="card"><h3>Orçamento planeado vs custo real por mês</h3><div class="legend" style="margin-bottom:6px"><span><i style="background:var(--accent)"></i>Custo real</span><span><i style="background:var(--steel)"></i>Orçamento planeado</span></div>${comboChart(PL.cost)}</div>
+    <div class="card"><h3>Progresso previsto vs real (% do orçamento total)</h3><div class="legend" style="margin-bottom:6px"><span><i style="background:var(--steel)"></i>Previsto</span><span><i style="background:var(--accent)"></i>Real</span></div>${lineChart([{data:prog.map(p => p.prev), color:'var(--steel)'}, {data:prog.map(p => p.real), color:'var(--accent)', area:true}], {labels:prog.map(p => p.m), max:1})}</div>
+    <div class="card"><h3>Desvio de custo % por tipo de projeto</h3>${bars(PL.tipo.map(t => ({name:t.name, v:t['Desvio%']})))}</div>
+    <div class="card"><h3>Custo real por ano</h3>${bars(Object.entries(PL.ano).map(([k, v]) => ({name:k, v})), {fmt:meur, hot:0})}<p class="muted" style="font-size:13px;margin:10px 0 0">Variação 2025 vs 2024: ${sp(PL.ano[2025] / PL.ano[2024] - 1, 0)} (medida Variação Custo vs Ano Anterior %).</p></div>
+  </div>
+  <h2>Página 2 · Prazos e Riscos</h2>
+  <div class="k3">
+    ${kpiCard('Nº de tarefas', nf(V['Nº Tarefas (após remover duplicados)']), 'Depois de remover duplicados')}
+    ${kpiCard('% de tarefas atrasadas', pc(V['% Tarefas Atrasadas'], 0), 'Dias_Atraso > 0', 'warn')}
+    ${kpiCard('Tarefas de risco alto', String(V['Tarefas Alto Risco']), `${V['Tarefas Bloqueadas']} bloqueadas`, 'warn')}
+    ${kpiCard('Dias de atraso médio', n2(V['Dias de Atraso Médio (projetos atrasados)'], 0), 'Só projetos atrasados')}
+    ${kpiCard('Desvio de horas', sp(V['Desvio de Horas %']), 'Horas reais vs previstas do trabalho feito', 'warn')}
+    ${kpiCard('CPI · índice de custo', n2(T.CPI), 'EV ÷ custo real · abaixo de 1 = acima do orçamento', 'bad')}
+  </div>
+  <div class="charts" style="margin-top:14px">
+    <div class="card"><h3>Desvio de custo % por fase da obra</h3>${bars(PL.fase.map(f => ({name:f.name, v:f['Desvio%']})), {hot:0})}</div>
+    <div class="card"><h3>% de tarefas de risco alto por fase</h3>${bars(PL.fase.map(f => ({name:f.name, v:f.Alto})), {fmt:v => pc(v, 0), hot:0})}</div>
+    <div class="card"><h3>Desvio de custo % por gestor</h3>${bars(PL.gestor.map(g => ({name:g.name, v:g['Desvio%']})))}</div>
+    <div class="card"><h3>Tarefas por estado</h3>${donut(PL.tarefas_estado)}</div>
+  </div>`; };
+
+V_.interpretacao = () => `${H('', 'Interpretação dos resultados', 'Etapa E do guia: 3 conclusões, 1 problema ou risco, 2 recomendações fundamentadas e como a dashboard ajuda a decidir.')}
+  <h2>Três conclusões</h2>
+  <div class="grid g3">
+    <div class="card"><span class="pill bad">Conclusão 1</span><h3 style="margin-top:8px">Reabilitação é o tipo de obra mais crítico</h3><p style="font-size:14px">Desvio de custo de ${sp(reab['Desvio%'])} e SPI de ${n2(reab.SPI)}. As obras de infraestrutura ficam em ${sp(infra['Desvio%'])}.</p>${bars(PL.tipo.map(t => ({name:t.name, v:t['Desvio%']})))}</div>
+    <div class="card"><span class="pill bad">Conclusão 2</span><h3 style="margin-top:8px">Instalações Técnicas concentra a derrapagem</h3><p style="font-size:14px">${sp(f5['Desvio%'])} de desvio, contra ${sp(T.desvio)} no portefólio. É também a fase com mais tarefas de risco alto (${pc(f5.Alto, 0)}).</p>${bars([...PL.fase].sort((a, b) => b['Desvio%'] - a['Desvio%']).slice(0, 4).map(f => ({name:f.name, v:f['Desvio%']})))}</div>
+    <div class="card"><span class="pill bad">Conclusão 3</span><h3 style="margin-top:8px">O resultado depende do gestor</h3><p style="font-size:14px">Os projetos de ${esc(g1.name)} estão ${sp(g1['Desvio%'])} acima do valor ganho e ${g1Int} dos ${nInt} projetos a intervir são seus. O melhor gestor fica em ${sp(gmin['Desvio%'])}.</p>${bars(PL.gestor.slice(0, 4).map(g => ({name:g.name, v:g['Desvio%']})))}</div>
+  </div>
+  <h2>Problema, risco ou oportunidade</h2>
+  <div class="card hl"><p style="margin:0">${nInt} dos 16 projetos não concluídos já cumprem pelo menos um critério de intervenção. O desvio total é de ${meur(T.AC - T.EV)} (${sp(T.desvio)}). As subempreitadas derrapam ${sp(k3['Desvio%'])} face ao plano e pesam mais de metade do orçamento das Instalações Técnicas. <b>Risco:</b> com um CPI de ${n2(T.CPI)}, o custo final das obras em curso ficará cerca de ${pc(1 / T.CPI - 1, 0)} acima do orçamento.</p></div>
+  <h2>Duas recomendações</h2>
+  <div class="grid g2">
+    <div class="card"><span class="pill info">Recomendação 1</span><h3 style="margin-top:8px">Controlar as Instalações Técnicas</h3><p style="font-size:14px;margin:0">Adjudicar as subempreitadas com preço fechado, rever o projeto de especialidades antes do arranque e criar um ponto de controlo de custos à entrada da fase. Acompanhar na página 2 com Fase = Instalações Técnicas.</p></div>
+    <div class="card"><span class="pill info">Recomendação 2</span><h3 style="margin-top:8px">Reunião quinzenal dos ${nInt} projetos a intervir</h3><p style="font-size:14px;margin:0">Começar pelos de maior desvio (tabela da página 1). Dar apoio a ${esc(g1.name)} (gestor com menos experiência) e prever 15 a 20 % de contingência nas futuras obras de reabilitação.</p></div>
+  </div>
+  <h2>Como a dashboard ajuda o Diretor de Projetos</h2>
+  <p>A página 1 mostra o estado do portefólio e a lista de projetos a intervir, já ordenada pelo desvio. A página 2 mostra as causas por fase, tarefa, risco e gestor. CPI e SPI permitem comparar obras de tamanhos diferentes. Os segmentadores (ano, tipo, gestor, estado, fase) repetem a análise para qualquer parte do portefólio.</p>
+  <h2>Projetos a intervir</h2>${interventionTable()}`;
+
+V_.plano = () => { const P = [['1. Definição do projeto', 15, 'Escolher o tema, definir o problema de negócio, o público-alvo e as perguntas', 'Tema 3; Diretor de Projetos; 3 perguntas e KPIs na proposta (Anexo A)', 'var(--steel)'],
+    ['2. Pesquisa e preparação dos dados', 60, 'Procurar o dataset, avaliar a qualidade, importar e transformar no Power Query', 'Dataset fictício em Excel; 5 critérios verificados; limpeza, Append e Merge', '#3F7FB5'],
+    ['3. Modelação e DAX', 90, 'Construir o modelo, criar o Calendário e as relações, desenvolver e validar as medidas', 'Estrela, dCalendario em DAX, 15 relações, 42 medidas, folha Validacao', 'var(--good)'],
+    ['4. Construção da dashboard', 120, 'Escolher gráficos, definir o layout, criar KPIs, filtros e interatividade', '2 páginas, 12 KPIs, 10 visuais, navegação, limpar filtros, 5 segmentadores', 'var(--accent)'],
+    ['5. Conclusões e apresentação', 60, 'Preparar as conclusões, rever o trabalho e apresentar', '3 conclusões, 1 risco, 2 recomendações, resumo executivo, guião da defesa', '#8A5A2B']];
+  const tot = P.reduce((a, p) => a + p[1], 0);
+  return `${H('', 'Plano de tempo', 'As 5 etapas do guia, com a duração de cada uma e o que foi feito neste projeto.')}
+  <div class="tl" aria-label="Distribuição do tempo">${P.map(p => `<div style="flex:${p[1]};background:${p[4]}" title="${p[0]} · ${p[1]} min">${p[1] >= 60 ? (p[1] / 60).toString().replace('.', ',') + ' h' : p[1] + ' min'}</div>`).join('')}</div>
+  <p class="muted" style="font-size:13px">Total das etapas: ${Math.floor(tot / 60)} h ${tot % 60} min. O título do quadro no guia diz 6 horas e a capa diz 4 horas. Confirme com o formador qual é o tempo disponível.</p>
+  <div class="tbl-wrap"><table><thead><tr><th>Etapa</th><th>Duração</th><th>O que fazer (guia)</th><th>O que foi feito</th></tr></thead><tbody>${P.map(p => `<tr><td><b>${p[0]}</b></td><td class="num">${p[1] >= 60 ? (p[1] / 60).toString().replace('.', ',') + ' h' : p[1] + ' min'}</td><td>${p[2]}</td><td>${p[3]}</td></tr>`).join('')}</tbody></table></div>`; };
+
+V_['usar-ia'] = () => `${H('', 'Posso usar IA?', 'Sim, mas com regras. O objetivo é que o raciocínio e a decisão sejam do formando. O guia pede três coisas.')}
+  <div class="grid" style="gap:12px">
+    <div class="card"><span class="pill warn">1 · Antes de usar IA</span><h3 style="margin-top:8px">Proposta individual inicial</h3><p style="font-size:14px">Uma página com o problema a resolver, três perguntas de negócio e os KPIs considerados relevantes (Anexo A). Mostra o raciocínio inicial.</p><p style="font-size:14px;margin:0"><b>Neste trabalho:</b> proposta finalizada (Anexo A), com o tema, o problema, o utilizador, as 3 perguntas, os KPIs e o dataset.</p><button class="btn" style="margin-top:10px" data-go="anexos">Abrir Anexo A</button></div>
+    <div class="card"><span class="pill info">2 · No final</span><h3 style="margin-top:8px">Registo da utilização da IA</h3><p style="font-size:14px">Uma nota curta: para que se usou a IA, que sugestões foram rejeitadas e o que mudou depois de validar os resultados (Anexo B). Não é preciso entregar a conversa.</p><p style="font-size:14px;margin:0"><b>Neste trabalho a IA foi usada para:</b> gerar o dataset fictício, o esqueleto do modelo, as consultas Power Query, as medidas DAX, o layout inicial e um primeiro rascunho das conclusões. Algumas medidas tinham incorreções e foram alteradas depois de validar os resultados (Anexo B finalizado).</p><button class="btn" style="margin-top:10px" data-go="anexos">Abrir Anexo B</button></div>
+    <div class="card"><span class="pill good">3 · Apresentação</span><h3 style="margin-top:8px">Defesa individual da dashboard (5 a 8 minutos)</h3><p style="font-size:14px">Explicar o modelo de dados, duas medidas DAX, uma escolha de visualização e uma conclusão. Guião sugerido:</p>
+      <div class="tbl-wrap"><table><thead><tr><th>Tempo</th><th>O que mostrar</th><th>O que dizer</th></tr></thead><tbody>
+        <tr><td class="num">0:00–1:00</td><td>Página 1 · KPIs</td><td>Quem usa (Diretor de Projetos), o problema e as 3 perguntas</td></tr>
+        <tr><td class="num">1:00–2:30</td><td>Vista de modelo</td><td>Estrela: 4 factos, 4 dimensões, filtro numa direção, Calendário e relação inativa</td></tr>
+        <tr><td class="num">2:30–4:30</td><td>Medidas Valor Ganho (EV) e Projetos Intervenção Prioritária</td><td>Semi-aditividade (VAR + CALCULATE) e transição de contexto dentro de FILTER</td></tr>
+        <tr><td class="num">4:30–5:30</td><td>Tabela com semáforo / dispersão</td><td>Porque esta visualização em vez de gauges ou circulares</td></tr>
+        <tr><td class="num">5:30–7:00</td><td>Página 2 + segmentadores</td><td>Uma conclusão (Instalações Técnicas) e as 2 recomendações</td></tr>
+        <tr><td class="num">7:00–8:00</td><td>—</td><td>Como validou os cálculos e o que faria a seguir</td></tr>
+      </tbody></table></div><button class="btn" style="margin-top:10px" data-go="medidas">Ver as duas medidas</button></div>
+  </div>
+  <p class="callout" style="margin-top:16px">Quem consegue explicar e interpretar o próprio trabalho demonstra autonomia. Use o Assistente IA para treinar perguntas da defesa, mas responda com as suas palavras.</p>`;
+
+V_.ficheiros = () => `${H('', 'Ficheiros a submeter', 'O que o guia pede para entregar e onde está cada ficheiro. O ZIP tem tudo junto.')}
+  <div class="card hl" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between"><div><h3 style="margin:0">Projeto_Livre_Gestao_Projetos.zip</h3><span class="muted" style="font-size:13px">Dashboard Power BI (.pbix), Excel, projeto .pbip, relatório Word, esquema do modelo, layout, apresentação oral (PDF) e scripts · 2,1 MB</span></div><button class="btn primary" data-dl="zip">${ic('down')} Descarregar ZIP</button></div>
+  <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>#</th><th>Ficheiro pedido</th><th>Onde está</th><th>Estado</th></tr></thead><tbody>
+    <tr><td>1</td><td><b>Ficheiro .pbix</b> — dashboard com o modelo e as medidas</td><td><span class="mono">Gestao_Projetos.pbix</span> já guardado na pasta Gestao_Projetos, com os dados carregados. O ZIP traz também o projeto <span class="mono">.pbip</span> de origem.</td><td><button class="btn" data-dl="pbix">Descarregar .pbix</button></td></tr>
+    <tr><td>2</td><td><b>Dados de origem</b> com indicação da fonte</td><td><span class="mono">Dados_Gestao_Projetos.xlsx</span> (folha LEIA-ME indica a fonte)</td><td><button class="btn" data-dl="xlsx">Descarregar Excel</button></td></tr>
+    <tr><td>3</td><td><b>Resumo executivo</b> de uma página</td><td>Relatório Word, secção 1</td><td><button class="btn" data-dl="docx">Descarregar Word</button></td></tr>
+    <tr><td>4</td><td><b>Proposta inicial e nota de IA</b> (Anexos A e B)</td><td>Relatório Word e secção Anexos A e B desta página</td><td><span class="pill good">Efetuado</span></td></tr>
+    <tr><td>5</td><td><b>Apresentação oral</b> de 5 a 8 minutos</td><td><span class="mono">Apresentacao_Oral_Projeto_Livre.pdf</span>: guião de 8 diapositivos com o que dizer, as duas medidas DAX e perguntas prováveis do formador, preparado para o NotebookLM</td><td><button class="btn" data-dl="apres">Descarregar apresentação</button></td></tr>
+    <tr><td>6</td><td><b>Link público do Dashboard de Apresentação</b> (este dossiê)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
+    <tr><td>7</td><td><b>Link público do conteúdo Power BI</b> (versão web interativa das 2 páginas do relatório)</td><td><a href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi</a></td><td><a class="btn" href="https://pedropdvp.github.io/PowerBI-Trabalho-Aula-6/powerbi/" target="_blank" rel="noopener">Abrir ↗</a></td></tr>
+  </tbody></table></div>
+  <p class="muted" id="dlnote" style="font-size:13px">Cada descarga pede confirmação antes de guardar o ficheiro. O .pbix vem dentro de Gestao_Projetos_pbix.zip, porque o claude.ai não permite descarregar ficheiros .pbix diretamente: extraia o ZIP para obter o Gestao_Projetos.pbix.</p>
+  <h2>Como abrir o projeto Power BI</h2>
+  <ol style="display:flex;flex-direction:column;gap:6px;padding-left:20px;max-width:80ch">
+    <li>Extraia o ZIP (botão direito → Extrair tudo). O Power BI não lê ficheiros dentro de um ZIP.</li>
+    <li>Abra <span class="mono">PowerBI\\Gestao_Projetos.pbip</span> no Power BI Desktop.</li>
+    <li>Base → Transformar dados → Editar parâmetros → <b>CaminhoExcel</b>: cole o caminho completo do Excel. As aspas já não dão erro.</li>
+    <li>Aplicar alterações → Atualizar. O KPI Nº de projetos deve mostrar 32.</li>
+    <li>Ficheiro → Guardar como → .pbix.</li>
+  </ol>`;
+
+V_.avaliacao = () => { const R = [
+  ['Power Query', 'Limpeza e transformação dos dados', 'Trim, Capitalize, Replace Values, Remove Duplicates e nulos, tipos de dados em todas as consultas', 'Passos eficientes e reutilizáveis (Append, Merge, colunas novas)', 'Append de 2 ficheiros anuais, Merge de clientes e gestores, Custom e Conditional Columns, parâmetros CaminhoExcel e DataCorte', 'tabelas'],
+  ['Modelo de dados', 'Relações corretas', '15 relações *:1, filtro numa só direção', 'Modelo em estrela bem estruturado, com Calendário', '4 factos + 4 dimensões, dCalendario em DAX marcado como tabela de datas, relação inativa', 'modelo'],
+  ['DAX', 'Pelo menos 10 medidas explícitas', `${M.measures.length} medidas em _Medidas, com comparação, variação e %`, 'Contexto de filtro e inteligência temporal', 'CALCULATE/KEEPFILTERS/REMOVEFILTERS, FILTER com transição de contexto, semi-aditivo, SAMEPERIODLASTYEAR, TOTALYTD, USERELATIONSHIP', 'medidas'],
+  ['Dashboard', 'KPIs, gráficos e filtros em 2 páginas', '2 páginas, 6 KPIs cada, 10 visuais, 5 segmentadores', 'Navegação entre páginas e leitura clara', 'Botões de navegação, Limpar todos os filtros, storytelling O quê → Porquê, semáforo', 'kpis'],
+  ['Análise', '3 conclusões e 2 recomendações', '3 conclusões, 1 risco, 2 recomendações', 'Identificação de causas e oportunidades', 'Causas por tipo, fase, categoria e gestor; projeção pelo CPI', 'interpretacao'],
+  ['Qualidade e autonomia', 'Resultados coerentes, proposta inicial, nota de IA', 'Anexos A e B finalizados', 'Validação dos cálculos, documentação e defesa clara', 'Folha Validacao, relatório Word, este dossiê, guião de 5 a 8 minutos', 'anexos'],
+];
+  return `${H('', 'Avaliação', 'Onde está cada requisito obrigatório e cada ponto de diferenciação do quadro de avaliação do guia.')}
+  <div class="tbl-wrap"><table><thead><tr><th>Critério</th><th>Obrigatório</th><th>Onde está</th><th>Diferenciação</th><th>Onde está</th><th></th></tr></thead><tbody>${
+    R.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]} <span class="pill good">Cumpre</span></td><td>${r[3]}</td><td>${r[4]} <span class="pill good">Cumpre</span></td><td><button class="btn" data-go="${r[5]}">Ver</button></td></tr>`).join('')}</tbody></table></div>
+  <p class="callout" style="margin-top:14px">Proposta inicial e nota de IA finalizadas pelo formando (Anexos A e B, também no relatório Word).</p>`; };
+
+const ANEXO_A = [['Tema escolhido', 'Tema 3 — Gestão de Projetos (portefólio de obras de uma empresa de construção).'],
+  ['Problema de negócio', 'A empresa gere 32 projetos em simultâneo e não sabe, de forma rápida, quais estão atrasados, quais gastam acima do orçamento e onde estão as causas (fase, tipo de obra, gestor).\nAs decisões de intervenção chegam tarde.'],
+  ['Quem vai utilizar a dashboard e que decisões precisa de tomar', 'Diretor de Projetos / Gestor de Portefólio. Decide em que projetos intervir primeiro, onde reforçar equipas ou subempreiteiros, revê orçamentos e contingências e como distribui os projetos pelos gestores.'],
+  ['Três perguntas de negócio', '1) Que projetos estão atrasados e quais exigem intervenção prioritária?\n2) Onde estão os maiores desvios orçamentais (tipo, fase, categoria, gestor)?\n3) Como se compara o progresso previsto com o real ao longo do tempo?'],
+  ['Indicadores (KPIs) que considero relevantes', 'Nº de projetos;\n% de projetos atrasados;\ndias de atraso médio;\ncusto real vs orçamento;\ndesvio de custo (€ e %);\nCPI;\nSPI;\nprogresso previsto vs real;\nnº de projetos a intervir;\n% de tarefas de risco alto.'],
+  ['Dataset previsto (fonte) e tabelas necessárias', 'Conjunto fictício em Excel, gerado com IA (indicado).\nTabelas:\nProjetos,\nClientes,\nGestores,\nFases,\nCategorias,\nOrçamento mensal,\nCustos 2024 e 2025,\nTarefas e Progresso mensal.']];
+const ANEXO_B = [['Uso da IA', 'Geração do dataset fictício em Excel (com erros de qualidade propositados), finalização do modelo de dados, das consultas Power Query, das medidas DAX, do layout inicial da dashboard e de uma primeira versão das conclusões.'],
+  ['Alterações feitas depois de validar os resultados', 'Algumas das medidas estavam com incorreções e tiveram de ser alteradas.'],
+  ['O que fiz sem ajuda da IA', 'Todo o pensamento estruturado de como o modelo de dados deve ser e quais as relações entre as várias tabelas.\nEspecificar muito bem quais os objetivos deste projeto e o que deveria incluir obrigatoriamente.']];
+V_.anexos = () => { const f = (k, rows, ph) => rows.map(([lab, def], i) => `<div style="display:flex;flex-direction:column;gap:5px"><label for="${k}${i}"><b>${lab}</b></label><textarea id="${k}${i}" data-store="${k}${i}" rows="${def.length > 160 ? 4 : 3}" placeholder="${ph}">${esc(store.get(k + i + ':v2', def))}</textarea></div>`).join('');
+  return `${H('', 'Anexos A e B', 'Versão final da proposta inicial e da nota de utilização de IA, igual à do relatório Word. Pode editar os campos e copiar o texto.')}
+  <div class="grid g2" style="align-items:start">
+    <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0">Anexo A — Proposta inicial</h3><span class="pill good">Finalizado</span></div>
+      <div style="display:flex;flex-direction:column;gap:12px">${f('a', ANEXO_A, '')}</div><div class="row" style="margin-top:12px"><button class="btn" data-copy="a">Copiar Anexo A</button><button class="btn" data-reset="a">Repor versão final</button></div></div>
+    <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0">Anexo B — Nota de utilização de IA</h3><span class="pill good">Finalizado</span></div>
+      <div style="display:flex;flex-direction:column;gap:12px">${f('b', ANEXO_B, 'Escreva aqui com a sua experiência real')}</div><div class="row" style="margin-top:12px"><button class="btn" data-copy="b">Copiar Anexo B</button><button class="btn" data-reset="b">Repor versão final</button></div>
+      </div>
+  </div>`; };
+
+const CHECK = [['O público-alvo e as decisões estão identificados no resumo executivo.', 'publico'], ['Os dados foram limpos no Power Query e a fonte está indicada.', 'origem'],
+  ['O modelo tem relações corretas e uma tabela Calendário marcada como Date Table.', 'modelo'], ['Existem pelo menos 10 medidas explícitas e pelo menos uma de comparação, variação ou percentagem.', 'medidas'],
+  ['Os valores mudam corretamente quando se usam os segmentadores.', 'kpis'], ['A dashboard tem 2 páginas, 4 a 6 KPIs e pelo menos 4 visualizações, com títulos e unidades, botões de navegação e limpar slicers.', 'kpis'],
+  ['Há 3 conclusões, 1 problema/risco/oportunidade e 2 recomendações.', 'interpretacao'], ['Entregar o .pbix, os dados, o resumo executivo, a proposta inicial e a nota de IA.', 'ficheiros']];
+V_['anexo-c'] = () => { const st = store.get('chk', []); const done = st.filter(Boolean).length;
+  return `${H('', 'Anexo C — Lista de verificação final', 'Marque cada ponto depois de o confirmar no Power BI. As marcas ficam guardadas neste navegador.')}
+  <div class="row" style="justify-content:space-between;margin-bottom:8px"><b id="chkn">${done} de ${CHECK.length} confirmados</b><button class="btn" data-chkreset>Desmarcar tudo</button></div>
+  <div class="progress" style="margin-bottom:14px"><div id="chkbar" style="width:${done / CHECK.length * 100}%"></div></div>
+  <div class="grid" style="gap:8px">${CHECK.map(([t, go], i) => `<div class="check"><input type="checkbox" id="chk${i}" data-chk="${i}" ${st[i] ? 'checked' : ''}><label for="chk${i}" style="flex:1">${t}</label><button class="btn" data-go="${go}">Onde</button></div>`).join('')}</div>`; };
+
+// ---------- assistente ----------
+let chat = [], chatCtl = null, sampleFn;
+const CTX = () => `És o assistente do "Dossiê do Projeto Livre", um trabalho de formação em Power BI. Responde em português de Portugal, de forma clara e curta (máximo ~180 palavras, salvo se pedirem detalhe), sem inventar números: usa só os dados abaixo e o guia. Se a resposta não estiver nos dados, diz isso.
+
+=== RESUMO DO TRABALHO ===
+Tema 3 — Gestão de Projetos. Empresa fictícia Vértice Construções, 32 projetos (16 concluídos, 15 em curso, 1 suspenso), 2024–2025, data de corte 31/12/2025. Utilizador: Diretor de Projetos.
+Dados: Excel fictício gerado com IA/script Python (semente 2025), com erros propositados (duplicados, nulos, espaços, maiúsculas, textos diferentes) tratados no Power Query.
+Power Query: Append tCustos2024+tCustos2025; Merge de tClientes e tGestores em dProjetos (consultas auxiliares stg_ não carregadas); Trim, Text.Proper, Replace Values, Table.Distinct, filtro de nulos; colunas Dias_Atraso, Situacao_Prazo, Atrasada, Risco_Ordem; parâmetros CaminhoExcel e DataCorte.
+Modelo em estrela: factos fOrcamento, fCustos, fTarefas, fProgresso; dimensões dProjetos, dFases, dCategorias, dCalendario (DAX, marcada como tabela de datas). Relações: ${M.rels.map(r => `${r[0]}[${r[1]}]→${r[2]}[${r[3]}]${r[4] === false ? ' (inativa)' : ''}`).join('; ')}. Todas *:1, direção única. dProjetos não liga ao Calendário (evita ambiguidade).
+Medidas (${M.measures.length}): ${M.measures.map(m => `${m[1]} = ${m[2].replace(/\s+/g, ' ')}`).join(' | ')}
+Dashboard Power BI: página 1 Visão Geral (KPIs: Nº Projetos, % Projetos Atrasados, Custo Real Acumulado, Desvio de Custo %, SPI, Projetos a intervir; visuais: colunas+linha orçamento vs real por mês, barras desvio por tipo, tabela de intervenção com semáforo, linhas progresso previsto vs real). Página 2 Prazos e Riscos (KPIs: Nº Tarefas, % Tarefas Atrasadas, Tarefas Alto Risco, Dias de Atraso Médio, Desvio de Horas %, CPI; visuais: colunas por fase, matriz fase×risco, dispersão atraso×desvio, anel tarefas por estado, barras por gestor). Botões de navegação, limpar filtros, 5 segmentadores (Ano, Tipo, Gestor, Estado, Fase).
+Resultados: custo real ${meur(T.AC)}, EV ${meur(T.EV)}, PV ${meur(T.PV)}, desvio de custo ${sp(T.desvio)}, CPI ${n2(T.CPI, 3)}, SPI ${n2(T.SPI, 3)}, ${T.atrasados} projetos atrasados (${pc(V['% Projetos Atrasados'], 0)}), atraso médio ${n2(V['Dias de Atraso Médio (projetos atrasados)'], 1)} dias, ${nInt} projetos a intervir, ${V['Nº Tarefas (após remover duplicados)']} tarefas, ${V['Tarefas Alto Risco']} de risco alto, desvio de horas ${sp(V['Desvio de Horas %'])}.
+Desvio por tipo: ${PL.tipo.map(t => `${t.name} ${sp(t['Desvio%'])} SPI ${n2(t.SPI)}`).join('; ')}. Por fase: ${PL.fase.map(f => `${f.name} ${sp(f['Desvio%'])} (risco alto ${pc(f.Alto, 0)})`).join('; ')}. Por gestor: ${PL.gestor.map(g => `${g.name} ${sp(g['Desvio%'])}`).join('; ')}. Por categoria (vs plano): ${PL.cat.map(c => `${c.name} ${sp(c['Desvio%'])}`).join('; ')}.
+Projetos a intervir: ${PL.intervir.map(p => `${p.proj} (${p.gestor}, ${p.tipo}, desvio ${sp(p.desvio)}, SPI ${n2(p.spi)}, atraso ${p.atraso} d)`).join('; ')}.
+Conclusões: reabilitação mais crítica; Instalações Técnicas concentra derrapagem; resultado depende do gestor. Risco: CPI ${n2(T.CPI)} projeta custo final ~${pc(1 / T.CPI - 1, 0)} acima. Recomendações: preço fechado nas subempreitadas de Instalações Técnicas e ponto de controlo; reunião quinzenal dos projetos a intervir, apoio ao gestor ${g1.name}, contingência 15–20 % em reabilitação.
+Entregáveis: ZIP com Excel, projeto .pbip (o formando gera o .pbix com Guardar como), relatório Word (resumo executivo, Anexos A/B/C), scripts.
+
+=== GUIA DO PROJETO LIVRE (texto integral) ===
+${PL.guia.slice(0, 21000)}`;
+V_.assistente = () => `${H('', 'Assistente IA', 'Faça perguntas sobre o trabalho, o modelo, as medidas DAX ou as regras do guia. As respostas usam os dados deste dossiê e o texto integral do Guia_Projeto_Livre.pdf.')}
+  <div class="card"><div class="chat" id="chat"><div class="msg bot">Olá! Posso explicar qualquer parte do trabalho ou ajudar a preparar a defesa. Escolha uma pergunta abaixo ou escreva a sua.</div></div>
+    <div class="chips" style="margin:12px 0">${['Explica a medida Valor Ganho (EV) como se fosse para a defesa', 'Porque é que dProjetos não está ligada ao Calendário?', 'Que perguntas me pode fazer o formador na apresentação?', 'O que falta para cumprir a lista de verificação do Anexo C?', 'Qual a diferença entre Desvio vs Orçamento % e Desvio de Custo %?', 'Resume as 3 conclusões em 30 segundos'].map(q => `<button class="chip" data-ask="${esc(q)}">${q}</button>`).join('')}</div>
+    <form class="composer" id="askForm"><textarea id="askBox" rows="2" placeholder="Escreva a sua pergunta…" aria-label="Pergunta ao assistente"></textarea><button class="btn primary" id="askBtn" type="submit">Perguntar</button><button class="btn" id="stopBtn" type="button" hidden>Parar</button></form>
+    <p class="muted" id="aiNote" style="font-size:12.5px;margin:8px 0 0">As respostas são geradas com a sua conta Claude; na primeira pergunta é pedida autorização.</p></div>`;
+async function ask(q){
+  q = q.trim(); if (!q) return;
+  const box = $('#chat'); if (!box) return;
+  if (!sampleFn) { $('#aiNote').textContent = window.PL_STATIC ? 'Nesta versão pública o assistente não está disponível: precisa de uma conta Claude e funciona na versão do dossiê aberta em claude.ai.' : 'O assistente só funciona quando esta página é aberta em claude.ai.'; return }
+  box.insertAdjacentHTML('beforeend', `<div class="msg user">${esc(q)}</div>`);
+  const bubble = document.createElement('div'); bubble.className = 'msg bot'; bubble.textContent = 'A pensar…'; box.append(bubble); bubble.scrollIntoView({block:'nearest'});
+  chat.push({role:'user', content:q});
+  const turns = [{role:'user', content:CTX()}, {role:'assistant', content:'Entendido. Vou responder com base nesses dados e no guia.'}, ...chat.slice(-8)];
+  chatCtl = new AbortController(); $('#askBtn').disabled = true; $('#stopBtn').hidden = false;
+  try { const {text} = await sampleFn(turns, {cache:false, signal:chatCtl.signal, onText:({text}) => { bubble.textContent = text }});
+    chat.push({role:'assistant', content:text});
+  } catch (e) { bubble.textContent = e.text || ''; chat.pop();
+    const msg = {not_granted:'O assistente não foi autorizado nesta página.', sampling_disabled:'O Claude não está disponível nesta conta.', rate_limited:'Demasiados pedidos seguidos. Tente daqui a pouco.', session_expired:'A sessão expirou. Volte a iniciar sessão no claude.ai.', cancelled:''}[e.code] ?? 'Não foi possível obter resposta. Tente outra vez.';
+    if (msg) bubble.insertAdjacentHTML('beforeend', `${e.text ? '\n\n' : ''}<span class="muted">${msg}</span>`);
+    if (!e.text && !msg) bubble.remove();
+  } finally { $('#askBtn').disabled = false; $('#stopBtn').hidden = true; }
+}
+
+// ---------- downloads ----------
+let downloadsApi, filesLoaded = null;
+function loadFiles(){ return filesLoaded ??= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'files_v7.js'; s.onload = () => res(window.PL_FILES); s.onerror = rej; document.head.append(s) }) }
+async function download(key){
+  const note = $('#dlnote');
+  if (!downloadsApi && window.PL_STATIC) { const a = document.createElement('a'); a.href = window.PL_STATIC.files[key]; a.download = ''; document.body.append(a); a.click(); a.remove(); return }
+  if (!downloadsApi) { if (note) note.textContent = 'A descarga só funciona quando esta página é aberta em claude.ai.'; return }
+  try { const F = await loadFiles(); const f = F[key]; const bin = atob(f.b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    await downloadsApi.save({filename:f.name, data:new Blob([u])}); toast(`${f.name} guardado`);
+  } catch (e) { if (e?.code === 'declined') return; toast(e?.code === 'rate_limited' ? 'Já há uma descarga a aguardar confirmação.' : e?.code === 'rejected_extension' ? 'Este tipo de ficheiro não pode ser descarregado aqui.' : 'Não foi possível descarregar o ficheiro.') }
+}
+
+// ---------- router ----------
+function go(id, push = true){
+  if (!V_[id]) id = 'inicio';
+  $('#view').innerHTML = V_[id](); $('#crumb').textContent = ALL[id][1];
+  document.querySelectorAll('#nav [data-go]').forEach(b => b.setAttribute('aria-current', String(b.dataset.go === id)));
+  if (push) { try { history.replaceState(null, '', '#' + id) } catch {} }
+  $('#side').classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded', 'false');
+  window.scrollTo({top:0});
+  if (id === 'modelo') modelPanel(null);
+  if (id === 'medidas') renderMeasures();
+  if (id === 'assistente') { if (!sampleFn) $('#aiNote').textContent = sampleFn === null ? 'O assistente só funciona quando esta página é aberta em claude.ai.' : $('#aiNote').textContent; chat.forEach(m => $('#chat').insertAdjacentHTML('beforeend', `<div class="msg ${m.role === 'user' ? 'user' : 'bot'}">${esc(m.content)}</div>`)) }
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-mv],[data-mf],[data-ask],[data-dl],[data-copy],[data-reset],[data-chkreset],[data-mclear],#menuBtn,#stopBtn,#msvg .mt');
+  if (!t) { if ($('#side').classList.contains('open') && !e.target.closest('#side')) $('#side').classList.remove('open'); return }
+  if (t.id === 'menuBtn') { const o = $('#side').classList.toggle('open'); t.setAttribute('aria-expanded', String(o)); return }
+  if (t.id === 'stopBtn') { chatCtl?.abort(); return }
+  if (t.dataset.go) return go(t.dataset.go);
+  if (t.dataset.mv) return modelView(t.dataset.mv);
+  if (t.hasAttribute('data-mclear')) return modelView('all');
+  if (t.classList?.contains('mt')) return modelSelect(t.dataset.t);
+  if (t.dataset.mf) { document.querySelectorAll('[data-mf]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); return renderMeasures() }
+  if (t.dataset.ask) return ask(t.dataset.ask);
+  if (t.dataset.dl) return download(t.dataset.dl);
+  if (t.dataset.copy) { const k = t.dataset.copy, rows = k === 'a' ? ANEXO_A : ANEXO_B;
+    const txt = (k === 'a' ? 'Anexo A — Proposta inicial\n\n' : 'Anexo B — Nota de utilização de IA\n\n') + rows.map(([l], i) => `• ${l}:\n${$('#' + k + i).value}`).join('\n\n');
+    navigator.clipboard?.writeText(txt).then(() => toast('Texto copiado'), () => toast('Não foi possível copiar: selecione o texto manualmente.')); return }
+  if (t.dataset.reset) { const k = t.dataset.reset, rows = k === 'a' ? ANEXO_A : ANEXO_B; rows.forEach(([, d], i) => { $('#' + k + i).value = d; store.set(k + i + ':v2', d) }); toast('Versão final reposta'); return }
+  if (t.hasAttribute('data-chkreset')) { store.set('chk', []); go('anexo-c'); return }
+});
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('#msvg .mt')) { e.preventDefault(); modelSelect(e.target.dataset.t) } });
+document.addEventListener('input', e => {
+  if (e.target.id === 'mq') renderMeasures();
+  if (e.target.dataset?.store) store.set(e.target.dataset.store + ':v2', e.target.value);
+});
+document.addEventListener('change', e => { if (e.target.dataset?.chk != null) { const st = store.get('chk', []); st[+e.target.dataset.chk] = e.target.checked; store.set('chk', st);
+  const n = st.filter(Boolean).length; $('#chkn').textContent = `${n} de ${CHECK.length} confirmados`; $('#chkbar').style.width = n / CHECK.length * 100 + '%'; if (n === CHECK.length) toast('Lista completa!') } });
+document.addEventListener('submit', e => { if (e.target.id === 'askForm') { e.preventDefault(); const b = $('#askBox'); const q = b.value; b.value = ''; ask(q) } });
+document.addEventListener('keydown', e => { if (e.target.id === 'askBox' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#askForm').requestSubmit() } });
+
+renderNav();
+go((location.hash || '').slice(1) || 'inicio', false);
+if (window.claude?.use) {
+  claude.use('sample').then(s => { sampleFn = s; if (!s && $('#aiNote')) $('#aiNote').textContent = 'O assistente só funciona quando esta página é aberta em claude.ai.' }).catch(() => { sampleFn = null });
+  claude.use('downloads').then(d => { downloadsApi = d }).catch(() => {});
+} else { sampleFn = null }
+</script>
+</body></html>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relatório Gestão de Projetos</title>
+<meta name="description" content="Versão web interativa do relatório Power BI do Projeto Livre — Tema 3 Gestão de Projetos (dados fictícios).">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Réplica do relatório Power BI: barra lateral (navegação + segmentadores) e grelha de cartões, tema executivo escuro */
+:root{--bg:#0B1424;--side:#070E1C;--card:#121E33;--card2:#18263F;--line:#22324F;--fg:#E8EEF7;--fg2:#9FB0C8;--fg3:#6B7C96;--or:#F28C28;--bl:#3B82F6;--good:#30A46C;--warn:#F5A524;--bad:#E5484D;
+  --f:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--m:"IBM Plex Mono",ui-monospace,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--f)}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100%}
+.side{background:var(--side);border-right:1px solid var(--line);padding:18px 16px;display:flex;flex-direction:column;gap:10px;position:sticky;top:0;height:100vh;overflow-y:auto;box-shadow:inset 4px 0 0 var(--or)}
+.brand{display:flex;gap:10px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.brand i{width:42px;height:42px;border-radius:9px;background:var(--or);display:grid;place-items:center}
+.brand b{font-size:19px;display:block;line-height:1.1}.brand small{font:600 10px var(--m);color:var(--or);letter-spacing:1px}
+.lab{font:600 10.5px var(--m);color:var(--fg3);letter-spacing:1px;margin-top:6px}
+.nav{display:flex;flex-direction:column;gap:7px}
+.nb{border:1px solid var(--line);background:#111D33;border-radius:10px;padding:11px 14px;text-align:left;font-weight:600;cursor:pointer;color:#C9D4E5}
+.nb:hover{background:#1E3150;color:#fff;border-color:var(--or)}
+.nb[aria-current="true"]{background:var(--or);border-color:var(--or);color:#0B1424}
+.clear{border:1px solid var(--or);background:#0E1A2E;color:var(--or);border-radius:10px;padding:10px;font-weight:600;cursor:pointer}
+.clear:hover{background:var(--or);color:#0B1424}
+.sl{background:#0E1A2E;border:1px solid var(--line);border-radius:10px;padding:9px 10px;display:flex;flex-direction:column;gap:5px}
+.sl label{font:600 11px var(--m);color:var(--fg2)}
+.sl select{background:var(--card2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;color:var(--fg)}
+.foot{margin-top:auto;border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:var(--fg3)}
+.foot a{color:var(--fg2)}
+main{min-width:0;padding:20px max(16px,2vw) 32px}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:2px solid;border-image:linear-gradient(90deg,var(--or),transparent) 1;padding-bottom:12px;margin-bottom:16px}
+h1{margin:0;font-size:clamp(22px,2.6vw,30px);font-weight:700}
+.sub{color:var(--fg2);margin-top:3px}
+.pg{font:600 12px var(--m);color:var(--or);border:1px solid var(--or);border-radius:99px;padding:5px 12px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 14px}
+.chip{font:500 12px var(--m);background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--fg2)}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 3px 12px rgba(0,0,0,.35);padding:14px 16px;min-width:0}
+.kpi{text-align:center;display:flex;flex-direction:column;gap:4px;justify-content:center;min-height:104px}
+.kpi .t{font-size:12px;color:var(--fg2)}.kpi .v{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .n{font:500 11px var(--m);color:var(--fg3)}
+.grid{display:grid;gap:12px}
+.r1{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.r2{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.r3{grid-template-columns:minmax(0,1.4fr) minmax(0,1.25fr)}
+.r4{grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr) minmax(0,.65fr)}
+h2{font-size:14px;margin:0 0 8px;font-weight:600}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--m);fill:var(--fg2)}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--fg2);margin-bottom:4px;flex-wrap:wrap}.lg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tw{overflow:auto;max-height:420px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:var(--card2);color:var(--fg2);font-weight:600;font-size:11.5px;cursor:pointer}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--m)}
+tr:nth-child(even) td{background:#15233B}
+tr.click{cursor:pointer}tr.click:hover td{background:#1E3150}
+.s-bad{color:var(--bad);font-weight:600}.s-warn{color:var(--warn);font-weight:600}.s-good{color:var(--good);font-weight:600}
+.bar{cursor:pointer}.bar:hover{opacity:.8}
+.sel{outline:2px solid var(--or)}
+.empty{color:var(--fg3);padding:30px;text-align:center}
+.menu{display:none}
+@media (max-width:1250px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.r1,.r2,.r3,.r4{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:820px){.app{grid-template-columns:minmax(0,1fr)}.side{position:static;height:auto}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#070E1C" stroke-width="2.8" stroke-linejoin="round"><path d="M4 20 12 4l8 16z"/></svg></i><span><b>Vértice</b><small>CONSTRUÇÕES</small></span></div>
+    <div class="lab">NAVEGAÇÃO</div>
+    <div class="nav"><button class="nb" data-page="1">01&nbsp;&nbsp; Visão Geral</button><button class="nb" data-page="2">02&nbsp;&nbsp; Prazos e Riscos</button></div>
+    <div class="lab">FILTROS</div>
+    <button class="clear" id="clear">Limpar todos os filtros</button>
+    <div class="sl"><label for="fAno">Ano</label><select id="fAno"></select></div>
+    <div class="sl"><label for="fTipo">Tipo de projeto</label><select id="fTipo"></select></div>
+    <div class="sl"><label for="fGestor">Gestor de projeto</label><select id="fGestor"></select></div>
+    <div class="sl"><label for="fEstado">Estado do projeto</label><select id="fEstado"></select></div>
+    <div class="sl"><label for="fFase">Fase da obra</label><select id="fFase"></select></div>
+    <div class="foot"><b style="color:var(--fg2)">Gestão de Projetos 2024–2025</b><br>Dados fictícios · corte 31/12/2025<br>Versão web do relatório Power BI · <a href="../">Dossiê do projeto</a></div>
+  </aside>
+  <main>
+    <div class="hd"><div><h1 id="title"></h1><div class="sub" id="subtitle"></div></div><span class="pg" id="pgtag"></span></div>
+    <div class="chips" id="chips"></div>
+    <div id="page"></div>
+  </main>
+</div>
+<script src="pbi_data.js"></script>
+<script>
+const D = window.PBI, $ = s => document.querySelector(s);
+const FASE = Object.fromEntries(D.F), FASES = D.F.map(f => f[0]);
+const PRJ = D.P.map(r => ({id:r[0], nome:r[1], tipo:r[2], gestor:r[3], estado:r[4], distrito:r[5], orc:r[6], atraso:r[7]}));
+const PID = Object.fromEntries(PRJ.map(p => [p.id, p]));
+const CORTE = '2025-12';
+const pc = (v, d = 1) => v == null || !isFinite(v) ? '—' : (v * 100).toFixed(d).replace('.', ',') + ' %';
+const sp = (v, d = 1) => v == null || !isFinite(v) ? '—' : (v >= 0 ? '+' : '') + pc(v, d);
+const meur = v => (v / 1e6).toFixed(1).replace('.', ',') + ' M€';
+const n2 = v => v == null || !isFinite(v) ? '—' : v.toFixed(2).replace('.', ',');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uniq = a => [...new Set(a)].sort((x, y) => x.localeCompare(y, 'pt'));
+const F = {ano:'', tipo:'', gestor:'', estado:'', fase:''};
+let page = 1;
+
+function fillSel(id, opts, key, lab = v => v){ const s = $(id); s.innerHTML = `<option value="">Todos</option>` + opts.map(o => `<option value="${esc(o)}">${esc(lab(o))}</option>`).join(''); s.onchange = () => { F[key] = s.value; render() } }
+fillSel('#fAno', ['2024', '2025'], 'ano'); fillSel('#fTipo', uniq(PRJ.map(p => p.tipo)), 'tipo'); fillSel('#fGestor', uniq(PRJ.map(p => p.gestor)), 'gestor');
+fillSel('#fEstado', uniq(PRJ.map(p => p.estado)), 'estado'); fillSel('#fFase', FASES, 'fase', f => FASE[f]);
+function syncSel(){ for (const [k, id] of [['ano','#fAno'],['tipo','#fTipo'],['gestor','#fGestor'],['estado','#fEstado'],['fase','#fFase']]) $(id).value = F[k] }
+
+// ---------- motor de medidas (equivalente às medidas DAX) ----------
+function ctx(over = {}){
+  const f = {...F, ...over};
+  const P = PRJ.filter(p => (!f.tipo || p.tipo === f.tipo) && (!f.gestor || p.gestor === f.gestor) && (!f.estado || p.estado === f.estado) && (!f.proj || p.id === f.proj));
+  const ids = new Set(P.map(p => p.id));
+  const okF = fa => !f.fase || fa === f.fase;
+  const last = f.ano ? (f.ano === '2025' ? CORTE : f.ano + '-12') : CORTE;
+  const inYear = m => !f.ano || m.startsWith(f.ano);
+  return {f, P, ids, okF, last, inYear};
+}
+function measures(c){
+  let AC = 0, ACp = 0, EV = 0, PV = 0, BAC = 0, ORCd = 0;
+  for (const [p, fa, m, v] of D.K) if (c.ids.has(p) && c.okF(fa)) { if (m <= c.last) AC += v; if (c.inYear(m)) ACp += v }
+  for (const [p, fa, m, pv, ev] of D.G) if (c.ids.has(p) && c.okF(fa) && m === c.last) { PV += pv; EV += ev }
+  for (const [p, fa, m, v] of D.O) if (c.ids.has(p) && c.okF(fa)) { BAC += v; if (c.inYear(m) && m <= CORTE) ORCd += v }
+  return {AC, ACp, EV, PV, BAC, ORCd, desvio: EV ? AC / EV - 1 : null, SPI: PV ? EV / PV : null, CPI: AC ? EV / AC : null};
+}
+function intervir(c){
+  return c.P.map(p => { const m = measures(ctx({...c.f, proj:p.id})); const crit = p.estado !== 'Concluído' && ((m.desvio ?? 0) > .10 || p.atraso > 30 || (m.SPI ?? 1) < .90);
+    const est = p.estado === 'Concluído' ? 'Concluído' : crit ? 'Intervir' : ((m.desvio ?? 0) > .05 || (m.SPI ?? 1) < .95) ? 'Acompanhar' : 'Normal';
+    return {...p, ...m, crit, est} });
+}
+function tasks(c){ return D.T.filter(t => c.ids.has(t[0]) && c.okF(t[1]) && (!c.f.ano || String(t[8]) === c.f.ano)) }
+
+// ---------- gráficos SVG ----------
+function combo(rows, w = 640, h = 270){
+  if (!rows.length) return '<div class="empty">Sem dados para os filtros escolhidos.</div>';
+  const L = 52, R = 10, T = 12, B = 30, n = rows.length, mx = Math.max(1, ...rows.flatMap(r => [r.real, r.orc])) * 1.08, bw = (w - L - R) / n, y = v => T + (1 - v / mx) * (h - T - B);
+  let s = `<svg viewBox="0 0 ${w} ${h}">`;
+  for (let i = 0; i <= 4; i++) { const v = mx * i / 4; s += `<line x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10">${(v / 1e6).toFixed(1).replace('.', ',')} M€</text>` }
+  rows.forEach((r, i) => { s += `<rect x="${L + i * bw + bw * .17}" y="${y(r.real)}" width="${bw * .66}" height="${Math.max(0, y(0) - y(r.real))}" rx="2" fill="var(--or)"><title>${r.m} · custo real ${meur(r.real)} · orçamento ${meur(r.orc)}</title></rect>`;
+    if (n <= 12 || i % 3 === 0) s += `<text x="${L + i * bw + bw / 2}" y="${h - 10}" text-anchor="middle" font-size="9.5">${r.m}</text>` });
+  s += `<polyline points="${rows.map((r, i) => `${L + i * bw + bw / 2},${y(r.orc)}`).join(' ')}" fill="none" stroke="var(--bl)" stroke-width="2.5"/>`;
+  rows.forEach((r, i) => s += `<circle cx="${L + i * bw + bw / 2}" cy="${y(r.orc)}" r="2.6" fill="var(--bl)"/>`);
+  return s + '</svg>';
+}
+function lines(labels, series, w = 520, h = 270){
+  if (!labels.length) return '<div class="empty">Sem dados para os filtros escolhidos.</div>';
+  const L = 40, R = 12, T = 12, B = 30, n = labels.length, x = i => L + (n === 1 ? 0 : i * (w - L - R) / (n - 1)), y = v => T + (1 - v) * (h - T - B);
+  let s = `<svg viewBox="0 0 ${w} ${h}">`;
+  for (let i = 0; i <= 4; i++) s += `<line x1="${L}" x2="${w - R}" y1="${y(i / 4)}" y2="${y(i / 4)}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${L - 6}" y="${y(i / 4) + 4}" text-anchor="end" font-size="10">${i * 25} %</text>`;
+  labels.forEach((l, i) => { if (n <= 12 || i % 3 === 0) s += `<text x="${x(i)}" y="${h - 10}" text-anchor="middle" font-size="9.5">${l}</text>` });
+  for (const se of series) { s += `<polyline points="${se.d.map((v, i) => `${x(i)},${y(v)}`).join(' ')}" fill="none" stroke="${se.c}" stroke-width="2.6"/>`;
+    s += se.d.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="2.4" fill="${se.c}"><title>${labels[i]} · ${se.n}: ${pc(v)}</title></circle>`).join('') }
+  return s + '</svg>';
+}
+function hbars(rows, key, filterKey, color = 'var(--or)', fmt = sp){
+  if (!rows.length) return '<div class="empty">Sem dados.</div>';
+  const w = 380, rh = 34, L = 130, R = 62, h = rows.length * rh + 6, mx = Math.max(.0001, ...rows.map(r => Math.abs(r.v)));
+  let s = `<svg viewBox="0 0 ${w} ${h}">`;
+  rows.forEach((r, i) => { const bw = Math.abs(r.v) / mx * (w - L - R), y0 = i * rh + 6, sel = F[filterKey] === r.key;
+    s += `<g class="bar" data-f="${filterKey}" data-v="${esc(r.key)}"><rect x="0" y="${y0 - 3}" width="${w}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y0 + 15}" text-anchor="end" font-size="12" style="fill:var(--fg)">${esc(r.name)}</text>
+      <rect x="${L}" y="${y0 + 3}" width="${Math.max(2, bw)}" height="${rh - 14}" rx="3" fill="${color}" ${sel ? 'stroke="#fff" stroke-width="1.5"' : ''} opacity="${F[filterKey] && !sel ? .35 : 1}"/>
+      <text x="${L + Math.max(2, bw) + 6}" y="${y0 + 15}" font-size="11" style="fill:var(--fg)">${fmt(r.v)}</text></g>` });
+  return s + '</svg>';
+}
+function columns(rows, w = 640, h = 290){
+  const L = 44, R = 10, T = 16, B = 62, n = rows.length, gw = (w - L - R) / n, mx = Math.max(.01, ...rows.flatMap(r => [r.a, r.b])) * 1.15, y = v => T + (1 - Math.max(0, v) / mx) * (h - T - B);
+  let s = `<svg viewBox="0 0 ${w} ${h}">`;
+  for (let i = 0; i <= 4; i++) { const v = mx * i / 4; s += `<line x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10">${Math.round(v * 100)} %</text>` }
+  rows.forEach((r, i) => { const x0 = L + i * gw, bw = gw * .32, sel = F.fase === r.key;
+    s += `<g class="bar" data-f="fase" data-v="${r.key}" opacity="${F.fase && !sel ? .35 : 1}"><rect x="${x0}" y="${T}" width="${gw}" height="${h - T - B}" fill="transparent"/>
+      <rect x="${x0 + gw * .16}" y="${y(r.a)}" width="${bw}" height="${y(0) - y(r.a)}" rx="2" fill="var(--or)"><title>${r.name} · desvio ${sp(r.a)}</title></rect>
+      <rect x="${x0 + gw * .16 + bw + 3}" y="${y(r.b)}" width="${bw}" height="${y(0) - y(r.b)}" rx="2" fill="var(--bl)"><title>${r.name} · risco alto ${pc(r.b, 0)}</title></rect>
+      <text x="${x0 + gw * .16 + bw / 2}" y="${y(r.a) - 4}" text-anchor="middle" font-size="9.5" style="fill:var(--fg)">${r.a == null ? '' : Math.round(r.a * 100) + '%'}</text>
+      ${r.name.split(' ').reduce((acc, wd) => { const l = acc[acc.length - 1]; if (l && (l + ' ' + wd).length <= 14) acc[acc.length - 1] = l + ' ' + wd; else acc.push(wd); return acc }, []).slice(0, 3).map((ln, j) => `<text x="${x0 + gw / 2}" y="${h - B + 16 + j * 12}" text-anchor="middle" font-size="9.5">${esc(ln)}</text>`).join('')}</g>` });
+  return s + '</svg>';
+}
+function scatter(rows, w = 640, h = 330){
+  const pts = rows.filter(r => r.desvio != null);
+  if (!pts.length) return '<div class="empty">Sem dados.</div>';
+  const L = 52, R = 16, T = 14, B = 34, xs = pts.map(r => r.atraso), ys = pts.map(r => r.desvio);
+  const x0 = Math.min(0, ...xs), x1 = Math.max(10, ...xs) * 1.08, y0 = Math.min(0, ...ys), y1 = Math.max(.05, ...ys) * 1.12, om = Math.max(...pts.map(r => r.orc));
+  const X = v => L + (v - x0) / (x1 - x0) * (w - L - R), Y = v => T + (1 - (v - y0) / (y1 - y0)) * (h - T - B);
+  let s = `<svg viewBox="0 0 ${w} ${h}">`;
+  s += `<rect x="${X(30)}" y="${T}" width="${w - R - X(30)}" height="${Y(.10) - T}" fill="rgba(229,72,77,.08)"/><text x="${w - R - 6}" y="${T + 14}" text-anchor="end" font-size="10" style="fill:var(--bad)">atraso > 30 d e desvio > 10 %</text>`;
+  for (let i = 0; i <= 4; i++) { const v = y0 + (y1 - y0) * i / 4, xv = x0 + (x1 - x0) * i / 4;
+    s += `<line x1="${L}" x2="${w - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="10">${Math.round(v * 100)} %</text><text x="${X(xv)}" y="${h - 12}" text-anchor="middle" font-size="10">${Math.round(xv)} d</text>` }
+  for (const r of pts.sort((a, b) => b.orc - a.orc)) s += `<circle cx="${X(r.atraso)}" cy="${Y(r.desvio)}" r="${5 + 14 * Math.sqrt(r.orc / om)}" fill="${r.crit ? 'var(--bad)' : 'var(--or)'}" fill-opacity=".55" stroke="${r.crit ? 'var(--bad)' : 'var(--or)'}"><title>${esc(r.nome)} · ${r.atraso} dias · desvio ${sp(r.desvio)} · ${meur(r.orc)}</title></circle>`;
+  return s + '</svg>';
+}
+function donut(obj){
+  const cols = {'Concluída':'var(--good)','Em curso':'var(--bl)','Por iniciar':'var(--fg3)','Bloqueada':'var(--bad)'}, tot = Object.values(obj).reduce((a, b) => a + b, 0);
+  if (!tot) return '<div class="empty">Sem tarefas.</div>';
+  let a = 0, s = '<svg viewBox="0 0 140 140" style="max-width:190px;margin:0 auto">';
+  for (const [k, v] of Object.entries(obj)) { if (!v) continue; const a1 = a + v / tot * Math.PI * 2 - (v === tot ? .0001 : 0), lg = a1 - a > Math.PI ? 1 : 0;
+    s += `<path d="M${70 + 52 * Math.sin(a)} ${70 - 52 * Math.cos(a)} A52 52 0 ${lg} 1 ${70 + 52 * Math.sin(a1)} ${70 - 52 * Math.cos(a1)}" stroke="${cols[k]}" stroke-width="20" fill="none"><title>${k}: ${v}</title></path>`; a = a1 }
+  s += `<text x="70" y="68" text-anchor="middle" font-size="20" font-weight="700" style="fill:var(--fg)">${tot}</text><text x="70" y="84" text-anchor="middle" font-size="9">tarefas</text></svg>`;
+  return s + `<div class="lg" style="flex-direction:column;gap:5px;margin-top:8px">${Object.entries(obj).map(([k, v]) => `<span><i style="background:${cols[k]}"></i>${k}: <b style="color:var(--fg)">${v}</b> (${pc(v / tot, 0)})</span>`).join('')}</div>`;
+}
+const kpi = (t, v, n) => `<div class="card kpi"><div class="t">${t}</div><div class="v">${v}</div>${n ? `<div class="n">${n}</div>` : ''}</div>`;
+const sev = (v, a, b, inv) => v == null ? '' : (inv ? v < a : v > a) ? 's-bad' : (inv ? v < b : v > b) ? 's-warn' : 's-good';
+
+// ---------- páginas ----------
+function page1(c){
+  const M = measures(c), I = intervir(c), atr = c.P.filter(p => p.atraso > 0), nInt = I.filter(r => r.crit).length;
+  const months = [...new Set([...D.K.map(r => r[2]), ...D.O.map(r => r[2])])].filter(m => m <= CORTE && c.inYear(m)).sort();
+  const series = months.map(m => { let real = 0, orc = 0; for (const [p, fa, mm, v] of D.K) if (mm === m && c.ids.has(p) && c.okF(fa)) real += v; for (const [p, fa, mm, v] of D.O) if (mm === m && c.ids.has(p) && c.okF(fa)) orc += v; return {m, real, orc} }).filter((r, i, a) => a.slice(0, i + 1).some(x => x.real || x.orc));
+  const pm = months.filter(m => D.G.some(g => g[2] === m)), prog = pm.map(m => { let pv = 0, ev = 0; for (const [p, fa, mm, a, b] of D.G) if (mm === m && c.ids.has(p) && c.okF(fa)) { pv += a; ev += b } return {pv: M.BAC ? pv / M.BAC : 0, ev: M.BAC ? ev / M.BAC : 0} });
+  const byTipo = uniq(PRJ.map(p => p.tipo)).map(t => ({key:t, name:t, v:measures(ctx({tipo:t})).desvio})).filter(r => r.v != null).sort((a, b) => b.v - a.v);
+  const rows = I.filter(r => r.desvio != null).sort((a, b) => b.desvio - a.desvio);
+  return `<div class="kpis">${kpi('Nº de projetos', c.P.length, `${c.P.filter(p => p.estado === 'Concluído').length} concluídos`)}${kpi('% de projetos atrasados', pc(c.P.length ? atr.length / c.P.length : null, 0), `${atr.length} com atraso`)}
+    ${kpi('Custo real acumulado', meur(M.AC), `valor ganho ${meur(M.EV)}`)}${kpi('Desvio de custo (vs valor ganho)', `<span class="${sev(M.desvio, .10, .05)}">${sp(M.desvio)}</span>`, 'custo real ÷ EV − 1')}
+    ${kpi('SPI · índice de prazo', `<span class="${sev(M.SPI, .90, .97, true)}">${n2(M.SPI)}</span>`, 'EV ÷ PV')}${kpi('Projetos a intervir', `<span class="${nInt ? 's-bad' : 's-good'}">${nInt}</span>`, 'desvio>10% · atraso>30d · SPI<0,90')}</div>
+  <div class="grid r1"><div class="card"><h2>Orçamento planeado vs custo real por mês (€)</h2><div class="lg"><span><i style="background:var(--or)"></i>Custo real</span><span><i style="background:var(--bl)"></i>Orçamento planeado</span></div>${combo(series)}</div>
+    <div class="card"><h2>Desvio de custo % por tipo de projeto</h2><div class="lg">Clique numa barra para filtrar</div>${hbars(byTipo, 'v', 'tipo')}</div></div>
+  <div class="grid r2" style="margin-top:12px"><div class="card"><h2>Projetos que exigem intervenção prioritária (ordenado por desvio de custo)</h2><div class="tw"><table><thead><tr><th>Projeto</th><th>Gestor</th><th>Estado</th><th class="n">Dias de atraso</th><th class="n">Desvio de custo %</th><th class="n">SPI</th><th>Estado de intervenção</th></tr></thead><tbody>${
+    rows.map(r => `<tr><td>${esc(r.nome)}</td><td>${esc(r.gestor)}</td><td>${r.estado}</td><td class="n">${r.atraso}</td><td class="n ${sev(r.desvio, .10, .05)}">${sp(r.desvio)}</td><td class="n ${sev(r.SPI, .90, .97, true)}">${n2(r.SPI)}</td><td class="${{Intervir:'s-bad', Acompanhar:'s-warn', Normal:'s-good'}[r.est] || ''}">${r.est}</td></tr>`).join('') || `<tr><td colspan="7" class="empty">Sem projetos.</td></tr>`}</tbody></table></div></div>
+    <div class="card"><h2>Progresso previsto vs progresso real (%)</h2><div class="lg"><span><i style="background:var(--bl)"></i>Previsto</span><span><i style="background:var(--or)"></i>Real</span></div>${lines(pm, [{n:'Previsto', c:'var(--bl)', d:prog.map(p => p.pv)}, {n:'Real', c:'var(--or)', d:prog.map(p => p.ev)}])}</div></div>`;
+}
+function page2(c){
+  const M = measures(c), T = tasks(c), atr = c.P.filter(p => p.atraso > 0), I = intervir(c);
+  const tAtr = T.filter(t => t[4] > 0).length, alto = T.filter(t => t[3] === 'Alto').length, hr = T.reduce((a, t) => a + t[6], 0), hp = T.reduce((a, t) => a + t[5] * t[7], 0);
+  const byFase = FASES.map(f => { const cc = ctx({fase:f}), tt = tasks(cc); return {key:f, name:FASE[f], a:measures(cc).desvio ?? 0, b:tt.length ? tt.filter(t => t[3] === 'Alto').length / tt.length : 0} });
+  const riscos = ['Alto', 'Médio', 'Baixo'];
+  const mat = FASES.filter(f => c.okF(f)).map(f => ({f, v:riscos.map(r => T.filter(t => t[1] === f && t[3] === r).length)}));
+  const est = {'Concluída':0, 'Em curso':0, 'Por iniciar':0, 'Bloqueada':0}; T.forEach(t => est[t[2]] = (est[t[2]] || 0) + 1);
+  const byG = uniq(PRJ.map(p => p.gestor)).map(g => ({key:g, name:g, v:measures(ctx({gestor:g})).desvio})).filter(r => r.v != null).sort((a, b) => b.v - a.v);
+  return `<div class="kpis">${kpi('Nº de tarefas', T.length, 'no contexto de filtro')}${kpi('% de tarefas atrasadas', pc(T.length ? tAtr / T.length : null, 0), `${tAtr} tarefas`)}
+    ${kpi('Tarefas de risco alto', `<span class="${alto ? 's-warn' : 's-good'}">${alto}</span>`, `${T.filter(t => t[2] === 'Bloqueada').length} bloqueadas`)}${kpi('Dias de atraso médio (projetos)', atr.length ? Math.round(atr.reduce((a, p) => a + p.atraso, 0) / atr.length) : '—', 'só projetos atrasados')}
+    ${kpi('Desvio de horas', `<span class="${sev(hp ? hr / hp - 1 : null, .10, .05)}">${sp(hp ? hr / hp - 1 : null)}</span>`, 'horas reais vs previstas do feito')}${kpi('CPI · índice de custo', `<span class="${sev(M.CPI, .90, .97, true)}">${n2(M.CPI)}</span>`, 'EV ÷ custo real')}</div>
+  <div class="grid r3"><div class="card"><h2>Desvio de custo % e % de tarefas de risco alto por fase da obra</h2><div class="lg"><span><i style="background:var(--or)"></i>Desvio de custo %</span><span><i style="background:var(--bl)"></i>% tarefas risco alto</span><span>· clique numa fase para filtrar</span></div>${columns(byFase)}</div>
+    <div class="card"><h2>Nº de tarefas por fase e nível de risco</h2><div class="tw"><table><thead><tr><th>Fase</th>${riscos.map(r => `<th class="n">${r}</th>`).join('')}<th class="n">Total</th></tr></thead><tbody>${
+      mat.map(r => `<tr class="click" data-fase="${r.f}"><td>${FASE[r.f]}</td>${r.v.map((v, i) => `<td class="n" style="background:rgba(${i === 0 ? '229,72,77' : i === 1 ? '245,165,36' : '48,164,108'},${Math.min(.55, v / 40)})">${v}</td>`).join('')}<td class="n">${r.v.reduce((a, b) => a + b, 0)}</td></tr>`).join('')}
+      <tr><td><b style="color:var(--or)">Total</b></td>${riscos.map((r, i) => `<td class="n" style="color:var(--or);font-weight:700">${mat.reduce((a, x) => a + x.v[i], 0)}</td>`).join('')}<td class="n" style="color:var(--or);font-weight:700">${T.length}</td></tr></tbody></table></div></div></div>
+  <div class="grid r4" style="margin-top:12px"><div class="card"><h2>Projetos: atraso (dias) vs desvio de custo % · tamanho = orçamento</h2><div class="lg"><span><i style="background:var(--bad)"></i>A intervir</span><span><i style="background:var(--or)"></i>Restantes</span></div>${scatter(I)}</div>
+    <div class="card"><h2>Tarefas por estado</h2>${donut(est)}</div>
+    <div class="card"><h2>Desvio de custo % por gestor</h2><div class="lg">Clique para filtrar</div>${hbars(byG, 'v', 'gestor', 'var(--bl)')}</div></div>`;
+}
+function render(){
+  const c = ctx();
+  $('#title').textContent = page === 1 ? 'Visão Geral do Portefólio de Projetos' : 'Prazos, Fases e Riscos';
+  $('#subtitle').textContent = page === 1 ? 'Custos, prazos e projetos que exigem intervenção · para o Diretor de Projetos' : 'Onde estão os atrasos e as derrapagens: fases, tarefas, gestores e projetos';
+  $('#pgtag').textContent = `PÁGINA ${page} / 2`;
+  document.querySelectorAll('.nb').forEach(b => b.setAttribute('aria-current', String(+b.dataset.page === page)));
+  const lab = {ano:'Ano', tipo:'Tipo', gestor:'Gestor', estado:'Estado', fase:'Fase'};
+  $('#chips').innerHTML = Object.entries(F).filter(([, v]) => v).map(([k, v]) => `<span class="chip">${lab[k]}: ${esc(k === 'fase' ? FASE[v] : v)}</span>`).join('');
+  $('#page').innerHTML = page === 1 ? page1(c) : page2(c);
+  syncSel();
+}
+document.addEventListener('click', e => {
+  const nb = e.target.closest('.nb'); if (nb) { page = +nb.dataset.page; try { history.replaceState(null, '', '#p' + page) } catch {} render(); window.scrollTo({top:0}); return }
+  if (e.target.closest('#clear')) { Object.keys(F).forEach(k => F[k] = ''); render(); return }
+  const g = e.target.closest('.bar'); if (g) { const k = g.dataset.f; F[k] = F[k] === g.dataset.v ? '' : g.dataset.v; render(); return }
+  const tr = e.target.closest('tr[data-fase]'); if (tr) { F.fase = F.fase === tr.dataset.fase ? '' : tr.dataset.fase; render() }
+});
+page = location.hash === '#p2' ? 2 : 1;
+render();
+</script>
+</body>
+</html>
