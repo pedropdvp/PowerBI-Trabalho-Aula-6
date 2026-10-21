@@ -180,7 +180,8 @@ svg text{font-family:var(--f-mono)}
 .msg{max-width:min(760px,100%);padding:12px 15px;border-radius:16px;white-space:pre-wrap;line-height:1.6;animation:viewIn .4s ease both}
 .msg.user{align-self:flex-end;background:linear-gradient(120deg,var(--accent-soft),var(--steel-soft));border:1px solid var(--line);border-bottom-right-radius:4px}
 .msg.bot{align-self:flex-start;background:var(--panel-solid);border:1px solid var(--line);border-bottom-left-radius:4px}
-.composer{display:flex;gap:8px;align-items:flex-end}
+.composer{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.composer textarea{flex:1 1 280px}
 textarea{width:100%;font:inherit;color:var(--ink);background:var(--panel-solid);border:1px solid var(--line);border-radius:14px;padding:11px 13px;resize:vertical;min-height:46px;transition:border-color .2s,box-shadow .2s}
 textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
@@ -818,7 +819,7 @@ ${PL.guia.slice(0, 21000)}`;
 V_.assistente = () => `${H('', 'Assistente IA', 'Faça perguntas sobre o trabalho, o modelo, as medidas DAX ou as regras do guia. As respostas usam os dados deste dossiê e o texto integral do Guia_Projeto_Livre.pdf.')}
   <div class="card"><div class="chat" id="chat"><div class="msg bot">Olá! Posso explicar qualquer parte do trabalho ou ajudar a preparar a defesa. Escolha uma pergunta abaixo ou escreva a sua.</div></div>
     <div class="chips" style="margin:12px 0">${['Explica a medida Valor Ganho (EV) como se fosse para a defesa', 'Porque é que dProjetos não está ligada ao Calendário?', 'Que perguntas me pode fazer o formador na apresentação?', 'O que falta para cumprir a lista de verificação do Anexo C?', 'Qual a diferença entre Desvio vs Orçamento % e Desvio de Custo %?', 'Resume as 3 conclusões em 30 segundos'].map(q => `<button class="chip" data-ask="${esc(q)}">${q}</button>`).join('')}</div>
-    <form class="composer" id="askForm"><textarea id="askBox" rows="2" placeholder="Escreva a sua pergunta…" aria-label="Pergunta ao assistente"></textarea><button class="btn primary" id="askBtn" type="submit">Perguntar</button><button class="btn" id="stopBtn" type="button" hidden>Parar</button></form>
+    <form class="composer" id="askForm"><textarea id="askBox" rows="2" placeholder="Escreva a sua pergunta…" aria-label="Pergunta ao assistente"></textarea><button class="btn primary" id="askBtn" type="submit">Perguntar</button><button class="btn" id="stopBtn" type="button" hidden>Parar</button><button class="btn" id="clearChat" type="button" title="Apagar todas as perguntas e respostas desta conversa">Limpar conversas</button></form>
     <p class="muted" id="aiNote" style="font-size:12.5px;margin:8px 0 0">As respostas são geradas com a sua conta Claude; na primeira pergunta é pedida autorização.</p></div>`;
 async function ask(q){
   q = q.trim(); if (!q) return;
@@ -863,10 +864,11 @@ function go(id, push = true){
   if (id === 'assistente') { if (!sampleFn) $('#aiNote').textContent = sampleFn === null ? 'O assistente só funciona quando esta página é aberta em claude.ai.' : $('#aiNote').textContent; chat.forEach(m => $('#chat').insertAdjacentHTML('beforeend', `<div class="msg ${m.role === 'user' ? 'user' : 'bot'}">${esc(m.content)}</div>`)) }
 }
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-mv],[data-mf],[data-ask],[data-dl],[data-copy],[data-reset],[data-chkreset],[data-mclear],#menuBtn,#stopBtn,#msvg .mt');
+  const t = e.target.closest('[data-go],[data-mv],[data-mf],[data-ask],[data-dl],[data-copy],[data-reset],[data-chkreset],[data-mclear],#menuBtn,#stopBtn,#clearChat,#msvg .mt');
   if (!t) { if ($('#side').classList.contains('open') && !e.target.closest('#side')) $('#side').classList.remove('open'); return }
   if (t.id === 'menuBtn') { const o = $('#side').classList.toggle('open'); t.setAttribute('aria-expanded', String(o)); return }
   if (t.id === 'stopBtn') { chatCtl?.abort(); return }
+  if (t.id === 'clearChat') { chatCtl?.abort(); chat = []; const box = $('#chat'); if (box) box.innerHTML = '<div class="msg bot">Conversa limpa. Escolha uma pergunta abaixo ou escreva a sua.</div>'; toast('Conversas anteriores apagadas'); return }
   if (t.dataset.go) return go(t.dataset.go);
   if (t.dataset.mv) return modelView(t.dataset.mv);
   if (t.hasAttribute('data-mclear')) return modelView('all');
